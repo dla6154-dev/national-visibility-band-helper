@@ -1,0 +1,2457 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>전국 운항 공지 밴드 도우미</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #eef3ea;
+      --panel: rgba(255, 255, 255, 0.9);
+      --panel-soft: rgba(248, 250, 246, 0.94);
+      --panel-muted: rgba(244, 249, 241, 0.88);
+      --line: rgba(75, 101, 70, 0.12);
+      --line-strong: rgba(99, 125, 91, 0.24);
+      --text: #1d2b1f;
+      --muted: #617060;
+      --muted-soft: #879684;
+      --violet: #34bf57;
+      --violet-soft: rgba(61, 183, 80, 0.14);
+      --violet-line: rgba(51, 152, 66, 0.28);
+      --amber: #f2b154;
+      --amber-soft: rgba(242, 177, 84, 0.2);
+      --amber-line: rgba(191, 133, 34, 0.34);
+      --red: #e66a62;
+      --red-soft: rgba(230, 106, 98, 0.16);
+      --red-line: rgba(201, 96, 89, 0.32);
+      --emerald: #4bb86a;
+      --emerald-soft: rgba(75, 184, 106, 0.16);
+      --emerald-line: rgba(63, 145, 84, 0.28);
+      --sky: #4aa5d9;
+      --sky-soft: rgba(74, 165, 217, 0.14);
+      --sky-line: rgba(67, 129, 163, 0.24);
+      --shadow: 0 24px 48px rgba(58, 77, 57, 0.12);
+      font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Segoe UI", "Malgun Gothic", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(84, 186, 88, 0.09), transparent 28%),
+        radial-gradient(circle at top right, rgba(98, 181, 101, 0.08), transparent 22%),
+        linear-gradient(180deg, #f4f7f0 0%, #eef3ea 100%);
+      color: var(--text);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+      background: none;
+      color: inherit;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .page {
+      max-width: 1460px;
+      margin: 0 auto;
+      padding: 28px 16px 72px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      padding: 28px 30px;
+      border: 1px solid var(--line);
+      border-radius: 32px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(247, 250, 244, 0.92) 100%);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -76px -96px auto;
+      width: 230px;
+      height: 230px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(84, 186, 88, 0.16) 0%, rgba(84, 186, 88, 0) 72%);
+      pointer-events: none;
+    }
+
+    .hero-copy {
+      max-width: 840px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-tools {
+      display: grid;
+      gap: 8px;
+      justify-items: end;
+      max-width: 360px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: #2e7d32;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-copy p:last-child {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .hero-usage {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: right;
+    }
+
+    .refresh-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 16px;
+      border: 1px solid var(--violet-line);
+      border-radius: 999px;
+      background: var(--violet-soft);
+      color: #1f6f37;
+      font-weight: 800;
+      white-space: nowrap;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .refresh-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(51, 152, 66, 0.46);
+      background: rgba(61, 183, 80, 0.22);
+    }
+
+    .stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 28px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(244, 249, 241, 0.92) 100%);
+    }
+
+    .card-head h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.08;
+    }
+
+    .card-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .head-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge.info {
+      border: 1px solid var(--sky-line);
+      background: var(--sky-soft);
+      color: #2f6f95;
+    }
+
+    .badge.warn {
+      border: 1px solid var(--amber-line);
+      background: var(--amber-soft);
+      color: #9c6810;
+    }
+
+    .badge.good {
+      border: 1px solid var(--emerald-line);
+      background: var(--emerald-soft);
+      color: #257447;
+    }
+
+    .route-picker-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 16px 0 12px;
+      border: 1px solid var(--violet-line);
+      border-radius: 999px;
+      background: var(--violet-soft);
+      color: #1f6f37;
+      font-size: 14px;
+      font-weight: 800;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .route-picker-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(51, 152, 66, 0.46);
+      background: rgba(61, 183, 80, 0.22);
+    }
+
+    .route-picker-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #34bf57 0%, #26a547 100%);
+      color: #f6fff6;
+      flex: 0 0 auto;
+    }
+
+    .route-picker-icon svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .card-body {
+      padding: 20px 28px 24px;
+    }
+
+    .helper-topline {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .helper-topline-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .helper-topline-main {
+      min-width: 0;
+    }
+
+    .notice-mode-panel {
+      min-width: 280px;
+      display: grid;
+      gap: 8px;
+      justify-items: end;
+    }
+
+    .notice-mode-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .mode-btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--muted);
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+    }
+
+    .mode-btn.active {
+      border-color: var(--violet-line);
+      background: var(--violet-soft);
+      color: #1f6f37;
+    }
+
+    .helper-route-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .helper-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .chip-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 38px;
+    }
+
+    .helper-chip-wrap {
+      width: 100%;
+    }
+
+    .route-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 100%;
+      border: 1px solid var(--violet-line);
+      border-radius: 999px;
+      background: var(--violet-soft);
+      color: #1f6f37;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .route-chip.placeholder {
+      border-color: var(--line-strong);
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--muted);
+    }
+
+    .route-chip button {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(61, 183, 80, 0.18);
+      color: #1f6f37;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: center;
+      padding: 0;
+      flex: 0 0 auto;
+    }
+
+    .helper-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .helper-pane,
+    .preview-pane {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel-soft);
+      padding: 18px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .helper-pane {
+      display: grid;
+      grid-template-rows: auto auto minmax(320px, 1fr) auto;
+      gap: 14px;
+    }
+
+    .filter-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field-label {
+      margin: 0 0 8px;
+      color: #405240;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .toggle-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--muted);
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+    }
+
+    .toggle-btn.active {
+      border-color: var(--violet-line);
+      background: var(--violet-soft);
+      color: #1f6f37;
+    }
+
+    .notice-type-slot {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+    }
+
+    .notice-group-types {
+      display: flex;
+      gap: 10px;
+      margin: 0;
+    }
+
+    .custom-notice-box {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.84);
+    }
+
+    .custom-notice-label {
+      margin: 0;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .custom-notice-input {
+      min-height: 112px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .type-btn {
+      flex: 1 1 0;
+      min-height: 58px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 800;
+      transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+    }
+
+    .type-btn.active.wait {
+      border-color: var(--amber-line);
+      background: var(--amber-soft);
+      color: #9c6810;
+    }
+
+    .type-btn.active.ctrl {
+      border-color: var(--red-line);
+      background: var(--red-soft);
+      color: #9f3833;
+    }
+
+    .type-btn.active.normal {
+      border-color: var(--emerald-line);
+      background: var(--emerald-soft);
+      color: #257447;
+    }
+
+    .notice-list {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      max-height: 680px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .notice-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(250, 252, 248, 0.96) 100%);
+      text-align: left;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .notice-item:hover {
+      transform: translateY(-1px);
+      border-color: rgba(99, 125, 91, 0.3);
+    }
+
+    .notice-item.selected {
+      border-color: var(--violet-line);
+      background: rgba(61, 183, 80, 0.14);
+    }
+
+    .notice-check {
+      flex: 0 0 auto;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #9daf9a;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .notice-item.selected .notice-check {
+      border-color: #34bf57;
+      background: var(--violet);
+    }
+
+    .notice-time {
+      width: 56px;
+      color: #1d2b1f;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .notice-main {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .notice-name-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .notice-name {
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 800;
+      word-break: keep-all;
+    }
+
+    .notice-sub {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .status-badge.wait {
+      background: var(--amber-soft);
+      border: 1px solid var(--amber-line);
+      color: #9c6810;
+    }
+
+    .status-badge.normal {
+      background: var(--emerald-soft);
+      border: 1px solid var(--emerald-line);
+      color: #257447;
+    }
+
+    .status-badge.ctrl {
+      background: var(--red-soft);
+      border: 1px solid var(--red-line);
+      color: #9f3833;
+    }
+
+    .status-badge.pause {
+      background: rgba(133, 148, 129, 0.12);
+      border: 1px solid rgba(133, 148, 129, 0.26);
+      color: #6f7e6d;
+    }
+
+    .status-badge.extra {
+      background: var(--sky-soft);
+      border: 1px solid var(--sky-line);
+      color: #2f6f95;
+    }
+
+    .copied-badges {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .copied-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 3px 7px;
+      font-size: 10px;
+      font-weight: 800;
+      border: 1px solid transparent;
+    }
+
+    .copied-badge.wait {
+      border-color: var(--amber-line);
+      background: var(--amber-soft);
+      color: #9c6810;
+    }
+
+    .copied-badge.ctrl {
+      border-color: var(--red-line);
+      background: var(--red-soft);
+      color: #9f3833;
+    }
+
+    .copied-badge.normal {
+      border-color: var(--emerald-line);
+      background: var(--emerald-soft);
+      color: #257447;
+    }
+
+    .notice-empty {
+      border: 1px dashed var(--line-strong);
+      border-radius: 18px;
+      padding: 28px 18px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.6;
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .copy-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .copy-btn {
+      width: 100%;
+      min-height: 54px;
+      border-radius: 18px;
+      font-size: 16px;
+      font-weight: 800;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+    }
+
+    .copy-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .copy-btn.enabled {
+      border: 1px solid var(--violet-line);
+      background: var(--violet-soft);
+      color: #1f6f37;
+    }
+
+    .copy-btn:disabled,
+    .copy-btn.disabled {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--muted-soft);
+      cursor: not-allowed;
+    }
+
+    .sub-action-btn {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .sub-action-btn.restore {
+      border: 1px solid var(--sky-line);
+      background: var(--sky-soft);
+      color: #2f6f95;
+    }
+
+    .sub-action-btn.reset {
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.84);
+      color: #52624f;
+    }
+
+    .preview-pane {
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    .preview-card {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(251, 253, 249, 0.98) 100%);
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82);
+    }
+
+    .preview-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(247, 250, 244, 0.98) 0%, rgba(242, 247, 238, 0.98) 100%);
+    }
+
+    .preview-head > div:first-child {
+      position: relative;
+      padding-left: 52px;
+    }
+
+    .preview-head > div:first-child::before {
+      content: "B";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #34bf57 0%, #26a547 100%);
+      color: #f6fff6;
+      font-size: 15px;
+      font-weight: 900;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    }
+
+    .preview-head .eyebrow {
+      margin-bottom: 4px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .preview-head h3 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.15;
+    }
+
+    .preview-text {
+      margin: 0;
+      min-height: 300px;
+      padding: 18px;
+      color: #2b392c;
+      font-size: 15px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: keep-all;
+      font-family: inherit;
+    }
+
+    .preview-meta-grid {
+      margin-top: 0;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .meta-item {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.88);
+      padding: 14px 16px;
+    }
+
+    .meta-label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .meta-value {
+      display: block;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .summary-table th,
+    .summary-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .summary-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .summary-table th {
+      background: rgba(244, 249, 241, 0.94);
+      color: #2e7d32;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .summary-route {
+      color: #1f6f37;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .summary-ships {
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .foot-note {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(71, 86, 65, 0.28);
+      backdrop-filter: blur(10px);
+      z-index: 60;
+    }
+
+    .modal-dialog {
+      width: min(960px, 100%);
+      max-height: min(92vh, 920px);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 32px 84px rgba(58, 77, 57, 0.18);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(244, 249, 241, 0.96) 100%);
+    }
+
+    .modal-head h2 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.08;
+    }
+
+    .modal-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .modal-head-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .modal-close-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.88);
+      color: #52624f;
+      font-size: 20px;
+      font-weight: 700;
+      flex: 0 0 auto;
+    }
+
+    .modal-body {
+      padding: 20px 24px 24px;
+      overflow: auto;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      gap: 18px;
+    }
+
+    .picker-panel,
+    .modal-side {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .input,
+    .select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--text);
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .input:focus,
+    .select:focus {
+      border-color: rgba(51, 152, 66, 0.36);
+      box-shadow: 0 0 0 3px rgba(61, 183, 80, 0.14);
+    }
+
+    .select {
+      min-height: 360px;
+      padding: 8px;
+    }
+
+    .select option {
+      padding: 8px 10px;
+      border-radius: 10px;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 16px;
+      border-radius: 999px;
+      font-weight: 800;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .btn-pill:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      border: 1px solid var(--violet-line);
+      background: var(--violet-soft);
+      color: #1f6f37;
+    }
+
+    .btn-secondary {
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.92);
+      color: #52624f;
+    }
+
+    .modal-help-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(244, 249, 241, 0.88);
+      padding: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .modal-help-card strong {
+      color: var(--text);
+    }
+
+    #notice-copy-toast {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      width: min(480px, calc(100vw - 32px));
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(63, 145, 84, 0.24);
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 24px 56px rgba(58, 77, 57, 0.16);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      z-index: 70;
+    }
+
+    #notice-copy-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #notice-copy-toast pre {
+      margin: 0 0 10px;
+      white-space: pre-wrap;
+      word-break: keep-all;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.55;
+      font-family: inherit;
+    }
+
+    #notice-copy-toast p {
+      margin: 0;
+      color: #257447;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    @media (max-width: 1080px) {
+      .helper-split,
+      .modal-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .notice-list {
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        padding-top: 22px;
+      }
+
+      .hero,
+      .card-head,
+      .preview-head,
+      .modal-head {
+        flex-direction: column;
+      }
+
+      .hero-tools {
+        max-width: none;
+        justify-items: start;
+      }
+
+      .hero-usage {
+        text-align: left;
+      }
+
+      .head-actions,
+      .modal-head-actions {
+        justify-content: flex-start;
+      }
+
+      .helper-topline-row {
+        grid-template-columns: 1fr;
+      }
+
+      .notice-mode-panel {
+        min-width: 0;
+        justify-items: stretch;
+      }
+
+      .notice-mode-row,
+      .notice-group-types {
+        justify-content: flex-start;
+      }
+
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .notice-item {
+        align-items: flex-start;
+      }
+
+      .notice-time {
+        width: auto;
+        min-width: 54px;
+      }
+
+      .modal-backdrop {
+        padding: 12px;
+      }
+
+      .modal-body {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">여객선 운항 관리</p>
+        <h1>전국 운항 공지 밴드 도우미</h1>
+      </div>
+      <div class="hero-tools">
+        <button id="refresh-btn" class="refresh-btn" type="button">↻ 데이터 새로고침</button>
+        <p class="hero-usage">사용법: 내 항로 선택 후 문구 모드와 항차를 고르면 바로 복사할 수 있습니다.</p>
+      </div>
+    </header>
+
+    <section class="stack">
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">밴드 공지 도우미</p>
+            <h2>운항 공지 문구 추출</h2>
+          </div>
+          <div class="head-actions">
+            <button id="route-picker-open-btn" class="route-picker-btn" type="button" title="내 항로 선택" aria-label="내 항로 선택">
+              <span class="route-picker-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M5 18c1.5-4.5 4.5-7 9-7h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M14 6l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="6" cy="18" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+              </span>
+              <span>내 항로 선택</span>
+            </button>
+            <div id="helper-status-badge" class="badge good">표시 항차 0건</div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="helper-topline">
+            <div class="helper-topline-row">
+              <div class="helper-topline-main">
+                <div class="helper-route-row">
+                  <div id="selected-route-badge" class="badge info">선택 항로 없음</div>
+                  <div id="selected-routes" class="chip-wrap helper-chip-wrap"></div>
+                </div>
+              </div>
+              <div class="notice-mode-panel">
+                <p class="field-label">문구 모드</p>
+                <div id="notice-mode-buttons" class="notice-mode-row"></div>
+              </div>
+            </div>
+            <p id="helper-note" class="helper-note">내 항로 선택 버튼을 눌러 항로를 지정하면 출항시각, 선명, 출항지 항목이 자동으로 채워집니다.</p>
+          </div>
+
+          <div class="helper-split">
+            <section class="helper-pane">
+              <div>
+                <p class="field-label">문구 유형</p>
+                <div id="notice-type-buttons" class="notice-type-slot"></div>
+              </div>
+
+              <div class="filter-stack">
+                <div>
+                  <p class="field-label">표시 범위</p>
+                  <div id="time-filter-buttons" class="toggle-group"></div>
+                </div>
+              </div>
+
+              <div id="notice-list" class="notice-list"></div>
+
+              <div class="copy-actions">
+                <button id="copy-notice-btn" class="copy-btn disabled" type="button" disabled>항목을 선택하세요</button>
+                <button id="notice-reset-btn" class="sub-action-btn reset" type="button" hidden>이력 초기화</button>
+                <button id="notice-restore-btn" class="sub-action-btn restore" type="button" hidden>↩ 복원</button>
+              </div>
+            </section>
+
+            <aside class="preview-pane">
+              <div class="preview-card">
+                <div class="preview-head">
+                  <div>
+                    <p class="eyebrow">선택 문구</p>
+                    <h3>미리보기</h3>
+                  </div>
+                  <div id="snapshot-badge" class="badge info">API 확인 중</div>
+                </div>
+                <pre id="notice-preview-text" class="preview-text"></pre>
+              </div>
+            </aside>
+          </div>
+
+          <p class="foot-note">시계제한과 기상악화 문구를 한 화면에서 다루도록 구성했고, 그룹별 자유문구를 넣으면 그 문구 아래에 항로 목록이 이어집니다. 공공데이터 운항 API는 첫 화면 진입 때 1회 자동으로 읽고, 이후에는 `데이터 새로고침`을 눌렀을 때만 다시 읽습니다. 편도 항로는 왕복 2건을 1항차로 묶어 뒤쪽 편도는 숨깁니다.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div id="route-picker-modal" class="modal-backdrop" hidden>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="route-modal-title">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">전국 항로 설정</p>
+          <h2 id="route-modal-title">내 항로 선택</h2>
+          <p>항로를 검색한 뒤 더블클릭하거나 추가 버튼을 누르면 내 항로 목록에 들어갑니다. 선택한 항로는 메인 화면과 즉시 동기화됩니다.</p>
+        </div>
+        <div class="modal-head-actions">
+          <div id="modal-snapshot-badge" class="badge info">API 확인 중</div>
+          <button id="route-picker-close-btn" class="modal-close-btn" type="button" aria-label="닫기">×</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-grid">
+          <div class="picker-panel">
+            <div>
+              <p class="field-label">항로 검색</p>
+              <input id="route-search-input" class="input" type="text" placeholder="예: 진도, 제주, 우수영">
+            </div>
+
+            <div>
+              <p class="field-label">전국 항로 목록</p>
+              <select id="route-select" class="select" size="14"></select>
+            </div>
+
+            <div class="action-row">
+              <button id="add-route-btn" class="btn-pill btn-primary" type="button">내 항로 추가</button>
+              <button id="clear-routes-btn" class="btn-pill btn-secondary" type="button">선택 항로 전체 해제</button>
+            </div>
+          </div>
+
+          <div class="modal-side">
+            <div>
+              <p class="field-label">현재 선택한 항로</p>
+              <div id="route-modal-selected-routes" class="chip-wrap"></div>
+            </div>
+
+            <div class="modal-help-card">
+              <strong>사용 방법</strong><br>
+              1. 항로를 검색합니다.<br>
+              2. 목록에서 항로를 더블클릭하거나 `내 항로 추가`를 누릅니다.<br>
+              3. 닫으면 메인 화면 왼쪽 목록과 오른쪽 문구 미리보기가 바로 바뀝니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="notice-copy-toast">
+    <pre id="notice-copy-toast-text"></pre>
+    <p>✓ 복사됐어요</p>
+  </div>
+
+  <script>
+    const OPERATION_API_URL = "https://apis.data.go.kr/B554035/oprt-schd-info-v2/get-oprt-schd-info-v2";
+    const OPERATION_API_SERVICE_KEY = "4063f2c2047eaf451ca47bba11369c953e228d145a62d2be87ad7af1d0f3960f";
+    const API_PAGE_SIZE = 1000;
+    const STORAGE_KEY = "nationalVisibilityBandHelper.v5";
+
+    const NOTICE_GROUPS = [
+      {
+        key: "visibility",
+        label: "시계제한",
+        baseTypeKey: "visibility_wait",
+        types: [
+          { key: "visibility_wait", label: "출항대기", header: "항로상 시계제한으로 아래항로 출항대기합니다.", footer: "", badgeClass: "wait" },
+          { key: "visibility_ctrl", label: "통제", header: "항로상 시계제한으로 아래항로 통제합니다.", footer: "\n* 시계호전 시 다음항차부터 정상운항합니다.", badgeClass: "ctrl" },
+          { key: "visibility_normal", label: "정상운항", header: "시계호전되어 아래항로 정상운항합니다.", footer: "", badgeClass: "normal" }
+        ]
+      },
+      {
+        key: "weather",
+        label: "기상악화",
+        baseTypeKey: "weather_bad",
+        types: [
+          { key: "weather_bad", label: "기상악화", header: "항로상 기상악화로 아래항로 통제합니다.", footer: "", badgeClass: "ctrl" },
+          { key: "weather_advisory", label: "풍랑주의보", header: "항로상 풍랑주의보 발효로 아래항로 통제합니다.", footer: "", badgeClass: "ctrl" },
+          { key: "weather_normal", label: "정상운항", header: "기상호전으로 아래항로 정상운항합니다.", footer: "", badgeClass: "normal" }
+        ]
+      },
+      {
+        key: "custom",
+        label: "자유문구",
+        baseTypeKey: "custom_free",
+        types: [
+          { key: "custom_free", label: "자유문구", header: "", footer: "", badgeClass: "pause" }
+        ]
+      }
+    ];
+
+    const NOTICE_TYPES = NOTICE_GROUPS.flatMap((group) => (
+      group.types.map((type) => ({
+        ...type,
+        groupKey: group.key,
+        groupLabel: group.label,
+        baseTypeKey: group.baseTypeKey
+      }))
+    ));
+
+    const TIME_FILTERS = [
+      { key: "all", label: "오늘 전체" },
+      { key: "window", label: "현재 ±2시간" }
+    ];
+
+    const state = {
+      rows: [],
+      routes: [],
+      filteredRoutes: [],
+      pendingRoute: "",
+      selectedRoutes: [],
+      routeQuery: "",
+      timeFilter: "all",
+      activeMode: NOTICE_GROUPS[0].key,
+      activeType: NOTICE_TYPES[0].key,
+      selectedByType: Object.fromEntries(NOTICE_TYPES.map((type) => [type.key, new Set()])),
+      copiedByType: Object.fromEntries(NOTICE_TYPES.map((type) => [type.key, new Set()])),
+      customNoticeText: "",
+      copiedBackup: null,
+      observedDate: "",
+      snapshotCreatedAt: "",
+      loading: false,
+      error: "",
+      nextRefreshAt: 0
+    };
+
+    const els = {
+      refreshBtn: document.getElementById("refresh-btn"),
+      helperStatusBadge: document.getElementById("helper-status-badge"),
+      routePickerOpenBtn: document.getElementById("route-picker-open-btn"),
+      routePickerModal: document.getElementById("route-picker-modal"),
+      routePickerCloseBtn: document.getElementById("route-picker-close-btn"),
+      routeSearchInput: document.getElementById("route-search-input"),
+      routeSelect: document.getElementById("route-select"),
+      addRouteBtn: document.getElementById("add-route-btn"),
+      clearRoutesBtn: document.getElementById("clear-routes-btn"),
+      selectedRoutes: document.getElementById("selected-routes"),
+      routeModalSelectedRoutes: document.getElementById("route-modal-selected-routes"),
+      selectedRouteBadge: document.getElementById("selected-route-badge"),
+      helperNote: document.getElementById("helper-note"),
+      noticeModeButtons: document.getElementById("notice-mode-buttons"),
+      noticeTypeButtons: document.getElementById("notice-type-buttons"),
+      timeFilterButtons: document.getElementById("time-filter-buttons"),
+      noticeList: document.getElementById("notice-list"),
+      copyNoticeBtn: document.getElementById("copy-notice-btn"),
+      noticeResetBtn: document.getElementById("notice-reset-btn"),
+      noticeRestoreBtn: document.getElementById("notice-restore-btn"),
+      noticePreviewText: document.getElementById("notice-preview-text"),
+      snapshotBadge: document.getElementById("snapshot-badge"),
+      modalSnapshotBadge: document.getElementById("modal-snapshot-badge"),
+      toast: document.getElementById("notice-copy-toast"),
+      toastText: document.getElementById("notice-copy-toast-text")
+    };
+
+    function loadPersistedState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.selectedRoutes)) state.selectedRoutes = parsed.selectedRoutes.filter(Boolean);
+        if (typeof parsed.routeQuery === "string") state.routeQuery = parsed.routeQuery;
+        if (typeof parsed.timeFilter === "string") state.timeFilter = parsed.timeFilter;
+        if (typeof parsed.activeMode === "string" && NOTICE_GROUPS.some((group) => group.key === parsed.activeMode)) {
+          state.activeMode = parsed.activeMode;
+        }
+        if (typeof parsed.activeType === "string" && NOTICE_TYPES.some((type) => type.key === parsed.activeType)) {
+          state.activeType = parsed.activeType;
+        }
+        if (typeof parsed.customNoticeText === "string") state.customNoticeText = parsed.customNoticeText;
+        if (parsed.copiedByType && typeof parsed.copiedByType === "object") {
+          NOTICE_TYPES.forEach((type) => {
+            state.copiedByType[type.key] = new Set(Array.isArray(parsed.copiedByType[type.key]) ? parsed.copiedByType[type.key] : []);
+          });
+        }
+        if (getNoticeType(state.activeType).groupKey !== state.activeMode) {
+          state.activeType = getNoticeGroup(state.activeMode).baseTypeKey;
+        }
+      } catch (error) {
+        console.warn("저장된 상태 복원 실패", error);
+      }
+    }
+
+    function persistState() {
+      const payload = {
+        selectedRoutes: state.selectedRoutes,
+        routeQuery: state.routeQuery,
+        timeFilter: state.timeFilter,
+        activeMode: state.activeMode,
+        activeType: state.activeType,
+        customNoticeText: state.customNoticeText,
+        copiedByType: Object.fromEntries(
+          NOTICE_TYPES.map((type) => [type.key, [...state.copiedByType[type.key]]])
+        )
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function formatHHMM(value) {
+      const digits = String(value ?? "").replace(/\D/g, "").padStart(4, "0").slice(-4);
+      return digits.slice(0, 2) + ":" + digits.slice(2);
+    }
+
+    function hhmmToMinutes(value) {
+      const digits = String(value ?? "").replace(/\D/g, "").padStart(4, "0").slice(-4);
+      const hour = Number(digits.slice(0, 2));
+      const minute = Number(digits.slice(2));
+      return hour * 60 + minute;
+    }
+
+    function formatDateKorean(dateString) {
+      if (!dateString) return "-";
+      const date = new Date(dateString + "T00:00:00+09:00");
+      if (Number.isNaN(date.getTime())) return dateString;
+      return new Intl.DateTimeFormat("ko-KR", {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        weekday: "short"
+      }).format(date);
+    }
+
+    function formatDateTimeKorean(isoString) {
+      if (!isoString) return "-";
+      const date = new Date(isoString);
+      if (Number.isNaN(date.getTime())) return isoString;
+      return new Intl.DateTimeFormat("ko-KR", {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      }).format(date);
+    }
+
+    function getTodayKstString() {
+      const now = new Date();
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(now);
+      const map = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+      return `${map.year}-${map.month}-${map.day}`;
+    }
+
+    function getTodayApiDateString() {
+      return getTodayKstString().replace(/-/g, "");
+    }
+
+    function getNoticeType(typeKey = state.activeType) {
+      return NOTICE_TYPES.find((type) => type.key === typeKey) || NOTICE_TYPES[0];
+    }
+
+    function getNoticeGroup(groupKey) {
+      return NOTICE_GROUPS.find((group) => group.key === groupKey) || NOTICE_GROUPS[0];
+    }
+
+    function getNoticeGroupForType(typeKey = state.activeType) {
+      return getNoticeGroup(getNoticeType(typeKey).groupKey);
+    }
+
+    function isBaseNoticeType(typeKey = state.activeType) {
+      const type = getNoticeType(typeKey);
+      return type.key === type.baseTypeKey;
+    }
+
+    function getNoticeHeaderText(typeKey = state.activeType) {
+      const type = getNoticeType(typeKey);
+      if (type.groupKey === "custom") {
+        return String(state.customNoticeText ?? "").trim();
+      }
+      return type.header;
+    }
+
+    function setActiveMode(modeKey) {
+      const group = getNoticeGroup(modeKey);
+      state.activeMode = group.key;
+
+      if (group.key === "custom") {
+        state.activeType = group.baseTypeKey;
+      } else if (getNoticeType(state.activeType).groupKey !== group.key) {
+        state.activeType = group.baseTypeKey;
+      }
+
+      persistState();
+      render();
+    }
+
+    function updateCustomNoticeText(value) {
+      state.customNoticeText = value;
+      persistState();
+      renderNoticePreview();
+      renderCopyButtons();
+    }
+
+    function getNowMinutes() {
+      const now = new Date();
+      return now.getHours() * 60 + now.getMinutes();
+    }
+
+    function isWithinTwoHourWindow(row) {
+      const nowMinutes = getNowMinutes();
+      const rowMinutes = hhmmToMinutes(row.sail_time_hhmm);
+      const distance = Math.abs(rowMinutes - nowMinutes);
+      return Math.min(distance, 1440 - distance) <= 120;
+    }
+
+    function normalizeApiText(value) {
+      return String(value ?? "").trim();
+    }
+
+    function normalizeApiDate(value) {
+      const digits = String(value ?? "").replace(/\D/g, "");
+      if (digits.length !== 8) return normalizeApiText(value);
+      return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6, 8)}`;
+    }
+
+    function buildKstDateTime(observedDate, hhmm) {
+      const date = normalizeApiDate(observedDate);
+      const digits = String(hhmm ?? "").replace(/\D/g, "").padStart(4, "0").slice(-4);
+      return `${date}T${digits.slice(0, 2)}:${digits.slice(2, 4)}:00+09:00`;
+    }
+
+    function normalizeOperationStatusLabel(row) {
+      const operationType = normalizeApiText(row.nvg_se_nm);
+      if (operationType) return operationType;
+      if (normalizeApiText(row.cntrl_rsn_nm)) return "통제";
+      if (normalizeApiText(row.nnavi_rsn_nm)) return "비운";
+      if (normalizeApiText(row.cnls_etc_rsn)) return "결항";
+      const statusName = normalizeApiText(row.nvg_stts_nm);
+      if (statusName) return statusName;
+      return "미입력";
+    }
+
+    function shouldExcludeFromList(row) {
+      return /비운/.test(String(row?.operation_status_label ?? "").trim());
+    }
+
+    function isAffectedStatus(label) {
+      const value = String(label ?? "").trim();
+      return /(통제|대기|결항|비운|중단|지연)/.test(value);
+    }
+
+    function statusClass(label) {
+      const value = String(label ?? "").trim();
+      if (/(정상|운항)/.test(value)) return "normal";
+      if (/(통제|대기|결항)/.test(value)) return "ctrl";
+      if (/증회/.test(value)) return "extra";
+      return "pause";
+    }
+
+    function buildItemId(row) {
+      return [
+        row.route_name,
+        row.ship_name,
+        row.sail_time_hhmm,
+        row.departure_name,
+        row.arrival_name
+      ].join("|");
+    }
+
+    function statusPriority(label) {
+      const value = String(label ?? "").trim();
+      if (/(통제|결항|대기|중단|지연)/.test(value)) return 5;
+      if (/비운/.test(value)) return 4;
+      if (/증회/.test(value)) return 3;
+      if (/(정상|운항)/.test(value)) return 2;
+      if (/미입력/.test(value)) return 1;
+      return 0;
+    }
+
+    function pickPreferredRow(current, candidate) {
+      if (!current) return candidate;
+
+      const currentSnapshot = current.snapshot_created_at ? new Date(current.snapshot_created_at).getTime() : 0;
+      const candidateSnapshot = candidate.snapshot_created_at ? new Date(candidate.snapshot_created_at).getTime() : 0;
+
+      if (candidateSnapshot !== currentSnapshot) {
+        return candidateSnapshot > currentSnapshot ? candidate : current;
+      }
+
+      const currentPriority = statusPriority(current.operation_status_label);
+      const candidatePriority = statusPriority(candidate.operation_status_label);
+      if (candidatePriority !== currentPriority) {
+        return candidatePriority > currentPriority ? candidate : current;
+      }
+
+      const currentId = String(current.id ?? current.row_key ?? "");
+      const candidateId = String(candidate.id ?? candidate.row_key ?? "");
+      return candidateId > currentId ? candidate : current;
+    }
+
+    function dedupeRows(rows) {
+      const deduped = new Map();
+      rows.forEach((row) => {
+        const key = buildItemId(row);
+        const normalized = { ...row, itemId: key };
+        deduped.set(key, pickPreferredRow(deduped.get(key), normalized));
+      });
+      return [...deduped.values()];
+    }
+
+    function normalizeApiRow(row, fetchedAt) {
+      const observedDate = normalizeApiDate(row.rlvt_ymd);
+      const sailTime = String(row.sail_tm ?? "").replace(/\D/g, "").padStart(4, "0").slice(-4);
+      const departureCode = normalizeApiText(row.oport_cd);
+      const arrivalCode = normalizeApiText(row.dest_cd);
+      const shipCode = normalizeApiText(row.psnshp_cd);
+      const shipName = normalizeApiText(row.psnshp_nm);
+      const routeCode = normalizeApiText(row.lcns_seawy_cd);
+      const routeName = normalizeApiText(row.lcns_seawy_nm);
+
+      return {
+        id: [
+          observedDate,
+          shipCode || shipName,
+          routeCode || routeName,
+          sailTime,
+          departureCode,
+          arrivalCode,
+          normalizeApiText(row.nvg_drc_cd)
+        ].join("|"),
+        observed_date: observedDate,
+        snapshot_created_at: fetchedAt,
+        sail_time_hhmm: sailTime,
+        sail_time_kst: buildKstDateTime(observedDate, sailTime),
+        route_name: routeName,
+        route_code: routeCode,
+        navigation_route_name: normalizeApiText(row.nvg_seawy_nm),
+        navigation_code: normalizeApiText(row.nvg_seawy_cd),
+        ship_code: shipCode,
+        ship_name: shipName,
+        vessel_no: normalizeApiText(row.vsl_no),
+        departure_code: departureCode,
+        departure_name: normalizeApiText(row.oport_nm),
+        arrival_code: arrivalCode,
+        arrival_name: normalizeApiText(row.dest_nm),
+        direction_code: normalizeApiText(row.nvg_drc_cd),
+        direction_name: normalizeApiText(row.nvg_drc_nm),
+        route_type_code: normalizeApiText(row.seawy_se_cd),
+        route_type_label: normalizeApiText(row.seawy_se_nm),
+        operation_status_label: normalizeOperationStatusLabel(row),
+        operation_status_name: normalizeApiText(row.nvg_stts_nm),
+        control_reason_label: normalizeApiText(row.cntrl_rsn_nm),
+        non_sail_reason_label: normalizeApiText(row.nnavi_rsn_nm),
+        cancel_reason_label: normalizeApiText(row.cnls_etc_rsn)
+      };
+    }
+
+    function isOneWayRoute(row) {
+      return /편도/.test(String(row?.route_type_label ?? ""));
+    }
+
+    function buildVoyageClusterKey(row) {
+      return [
+        row.observed_date,
+        row.route_code || row.route_name,
+        row.ship_code || row.ship_name,
+        row.route_type_code || row.route_type_label
+      ].join("|");
+    }
+
+    function canCollapseReturnLeg(current, next) {
+      if (!current || !next) return false;
+      if (!isOneWayRoute(current) || !isOneWayRoute(next)) return false;
+      if ((current.route_code || current.route_name) !== (next.route_code || next.route_name)) return false;
+      if ((current.ship_code || current.ship_name) !== (next.ship_code || next.ship_name)) return false;
+      if (!current.departure_code || !current.arrival_code || !next.departure_code || !next.arrival_code) return false;
+      if (current.departure_code === next.departure_code && current.arrival_code === next.arrival_code) return false;
+      return current.departure_code === next.arrival_code && current.arrival_code === next.departure_code;
+    }
+
+    function collapseOneWayVoyages(rows) {
+      const grouped = new Map();
+
+      rows.forEach((row) => {
+        const key = buildVoyageClusterKey(row);
+        const bucket = grouped.get(key) || [];
+        bucket.push(row);
+        grouped.set(key, bucket);
+      });
+
+      const collapsed = [];
+      grouped.forEach((bucket) => {
+        const sorted = [...bucket].sort((a, b) => hhmmToMinutes(a.sail_time_hhmm) - hhmmToMinutes(b.sail_time_hhmm));
+        for (let index = 0; index < sorted.length; index += 1) {
+          const current = sorted[index];
+          const next = sorted[index + 1];
+          if (canCollapseReturnLeg(current, next)) {
+            collapsed.push({
+              ...pickPreferredRow(current, next),
+              id: current.id,
+              sail_time_hhmm: current.sail_time_hhmm,
+              sail_time_kst: current.sail_time_kst,
+              departure_code: current.departure_code,
+              departure_name: current.departure_name,
+              arrival_code: current.arrival_code,
+              arrival_name: current.arrival_name,
+              paired_return_time_hhmm: next.sail_time_hhmm,
+              paired_return_departure_name: next.departure_name,
+              paired_return_arrival_name: next.arrival_name,
+              pairing_mode: "paired_one_way"
+            });
+            index += 1;
+            continue;
+          }
+
+          collapsed.push(current);
+        }
+      });
+
+      return collapsed;
+    }
+
+    async function fetchOperationApiRows() {
+      const allRows = [];
+      let pageNo = 1;
+      let totalCount = Infinity;
+
+      while (allRows.length < totalCount) {
+        const params = new URLSearchParams({
+          serviceKey: OPERATION_API_SERVICE_KEY,
+          pageNo: String(pageNo),
+          numOfRows: String(API_PAGE_SIZE),
+          dataType: "JSON",
+          rlvtYmd: getTodayApiDateString()
+        });
+
+        const response = await fetch(`${OPERATION_API_URL}?${params.toString()}`);
+        if (!response.ok) {
+          throw new Error(`운항 API 조회 실패 (${response.status})`);
+        }
+
+        const payload = await response.json();
+        const header = payload?.response?.header;
+        if (String(header?.resultCode ?? "") !== "200") {
+          throw new Error(header?.resultMsg || "운항 API 응답이 정상이 아닙니다.");
+        }
+
+        const body = payload?.response?.body ?? {};
+        totalCount = Number(body.totalCount ?? 0);
+        const items = Array.isArray(body?.items?.item)
+          ? body.items.item
+          : body?.items?.item
+            ? [body.items.item]
+            : [];
+
+        allRows.push(...items);
+        if (!items.length || items.length < API_PAGE_SIZE) break;
+        pageNo += 1;
+      }
+
+      return allRows;
+    }
+
+    async function fetchLatestRows() {
+      state.loading = true;
+      state.error = "";
+      render();
+
+      try {
+        const fetchedAt = new Date().toISOString();
+        const apiRows = await fetchOperationApiRows();
+        const normalizedRows = apiRows
+          .map((row) => normalizeApiRow(row, fetchedAt))
+          .filter((row) => row.route_name && row.ship_name && row.sail_time_hhmm)
+          .filter((row) => !shouldExcludeFromList(row));
+
+        state.rows = dedupeRows(collapseOneWayVoyages(normalizedRows));
+
+        state.routes = [...new Set(state.rows.map((row) => row.route_name))].sort((a, b) => a.localeCompare(b, "ko"));
+        state.filteredRoutes = filterRoutes(state.routeQuery);
+        if (!state.pendingRoute || !state.routes.includes(state.pendingRoute)) {
+          state.pendingRoute = state.filteredRoutes[0] || state.routes[0] || "";
+        }
+        state.selectedRoutes = state.selectedRoutes.filter((route) => state.routes.includes(route));
+
+        state.snapshotCreatedAt = fetchedAt;
+        state.observedDate = normalizeApiDate(getTodayApiDateString());
+        state.nextRefreshAt = 0;
+        persistState();
+      } catch (error) {
+        state.error = error instanceof Error ? error.message : "데이터를 불러오지 못했습니다.";
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    function filterRoutes(query) {
+      const value = String(query ?? "").trim().toLowerCase();
+      if (!value) return [...state.routes];
+      return state.routes.filter((route) => route.toLowerCase().includes(value));
+    }
+
+    function getBaseVisibleRows() {
+      if (!state.selectedRoutes.length) return [];
+      const routeSet = new Set(state.selectedRoutes);
+      return state.rows
+        .filter((row) => routeSet.has(row.route_name))
+        .filter((row) => state.timeFilter === "all" ? true : isWithinTwoHourWindow(row))
+        .sort((a, b) => {
+          const aTime = hhmmToMinutes(a.sail_time_hhmm);
+          const bTime = hhmmToMinutes(b.sail_time_hhmm);
+          if (aTime !== bTime) return aTime - bTime;
+          return a.route_name.localeCompare(b.route_name, "ko") || a.ship_name.localeCompare(b.ship_name, "ko");
+        });
+    }
+
+    function getGroupScopedItemIds(groupKey) {
+      const group = getNoticeGroup(groupKey);
+      return new Set([
+        ...state.selectedByType[group.baseTypeKey],
+        ...state.copiedByType[group.baseTypeKey]
+      ]);
+    }
+
+    function shouldScopeRowsToBaseSelection(typeKey = state.activeType) {
+      const type = getNoticeType(typeKey);
+      return type.groupKey === "visibility" && !isBaseNoticeType(typeKey);
+    }
+
+    function getVisibleRows(typeKey = state.activeType) {
+      const rows = getBaseVisibleRows();
+      if (!shouldScopeRowsToBaseSelection(typeKey)) return rows;
+
+      const scopedItemIds = getGroupScopedItemIds(getNoticeType(typeKey).groupKey);
+      return rows.filter((row) => scopedItemIds.has(row.itemId));
+    }
+
+    function pruneSelections() {
+      NOTICE_TYPES.forEach((type) => {
+        const visibleIds = new Set(getVisibleRows(type.key).map((row) => row.itemId));
+        state.selectedByType[type.key] = new Set(
+          [...state.selectedByType[type.key]].filter((itemId) => visibleIds.has(itemId))
+        );
+      });
+    }
+
+    function getSelectedItems() {
+      const activeSet = state.selectedByType[state.activeType];
+      const rowsById = new Map(getVisibleRows().map((row) => [row.itemId, row]));
+      return [...activeSet]
+        .map((itemId) => rowsById.get(itemId))
+        .filter(Boolean)
+        .sort((a, b) => hhmmToMinutes(a.sail_time_hhmm) - hhmmToMinutes(b.sail_time_hhmm));
+    }
+
+    function getRowAssignedTypeKey(row, activeSet = state.selectedByType[state.activeType]) {
+      if (!row?.itemId) return "";
+      if (activeSet.has(row.itemId)) return state.activeType;
+      const orderedTypeKeys = [
+        state.activeType,
+        ...NOTICE_TYPES.map((type) => type.key).filter((key) => key !== state.activeType)
+      ];
+      return orderedTypeKeys.find((typeKey) => state.copiedByType[typeKey].has(row.itemId)) || "";
+    }
+
+    function getScopedSelectionHint(typeKey = state.activeType) {
+      const group = getNoticeGroupForType(typeKey);
+      const baseType = getNoticeType(group.baseTypeKey);
+      const siblingLabels = group.types
+        .filter((type) => type.key !== group.baseTypeKey)
+        .map((type) => type.label)
+        .join("와 ");
+      return `${siblingLabels}은 ${baseType.label}에서 먼저 누른 항목만 표시됩니다. ${baseType.label} 탭에서 항목을 먼저 선택하세요.`;
+    }
+
+    function getScopedEmptyHint(typeKey = state.activeType) {
+      if (!shouldScopeRowsToBaseSelection(typeKey)) {
+        return "선택한 조건에서 표시할 항차가 없습니다. 표시 범위를 바꿔보세요.";
+      }
+
+      const group = getNoticeGroupForType(typeKey);
+      const baseType = getNoticeType(group.baseTypeKey);
+      return `${baseType.label}에서 누른 항목 중 현재 조건에 맞는 항차가 없습니다.`;
+    }
+
+    function buildNoticeLines(selectedRows) {
+      return selectedRows.map((row, index) => (
+        `${index + 1}. ${row.route_name} ${row.ship_name}(${formatHHMM(row.sail_time_hhmm)} ${row.departure_name} 출항)`
+      ));
+    }
+
+    function buildNoticeBodyText(typeKey = state.activeType, selectedRows = getSelectedItems()) {
+      const type = getNoticeType(typeKey);
+      const header = getNoticeHeaderText(typeKey);
+      const lines = buildNoticeLines(selectedRows);
+      const headerBlock = header ? `${header}\n` : "";
+      return `${headerBlock}${lines.join("\n")}${type.footer}`;
+    }
+
+    function buildNoticeModeButtonsMarkup() {
+      return NOTICE_GROUPS.map((group) => `
+        <button
+          type="button"
+          class="mode-btn ${group.key === state.activeMode ? "active" : ""}"
+          data-notice-mode="${escapeHtml(group.key)}"
+        >${escapeHtml(group.label)}</button>
+      `).join("");
+    }
+
+    function buildNoticeTypePanelMarkup() {
+      const group = getNoticeGroup(state.activeMode);
+
+      if (group.key === "custom") {
+        return `
+          <div class="custom-notice-box">
+            <p class="custom-notice-label">자유문구를 입력하면 그 아래에 선택한 항로가 이어집니다.</p>
+            <textarea
+              class="input custom-notice-input"
+              data-custom-notice-input
+              placeholder="예: 현재 기상상태를 고려하여 아래 항로 운항계획을 공지합니다."
+            >${escapeHtml(state.customNoticeText || "")}</textarea>
+          </div>
+        `;
+      }
+
+      return `
+          <div class="notice-group-types">
+            ${group.types.map((type) => `
+              <button
+                type="button"
+                class="type-btn ${type.key === state.activeType ? `active ${type.badgeClass}` : ""}"
+                data-notice-type="${escapeHtml(type.key)}"
+              >${escapeHtml(type.label)}</button>
+            `).join("")}
+          </div>
+      `;
+    }
+
+    function buildCopyText() {
+      const selectedRows = getSelectedItems();
+      return buildNoticeBodyText(state.activeType, selectedRows);
+    }
+
+    function buildPreviewText() {
+      const selectedRows = getSelectedItems();
+      const header = getNoticeHeaderText(state.activeType);
+      const isCustomMode = state.activeMode === "custom";
+
+      if (!state.selectedRoutes.length) {
+        return "내 항로 선택 버튼을 눌러 항로를 먼저 지정하세요.";
+      }
+
+      if (!selectedRows.length) {
+        const previewHeader = header || (isCustomMode ? "자유문구를 입력하세요." : "");
+        return `${previewHeader}\n(왼쪽 항차 목록에서 복사할 항목을 선택하면 문구가 여기에 표시됩니다.)`.trim();
+      }
+
+      if (isCustomMode && !header) {
+        return `자유문구를 입력하세요.\n${buildNoticeLines(selectedRows).join("\n")}`;
+      }
+
+      return buildCopyText();
+    }
+
+    function updateFilterButtons(container, items, activeKey, onClickAttr) {
+      container.innerHTML = items.map((item) => `
+        <button
+          type="button"
+          class="toggle-btn ${item.key === activeKey ? "active" : ""}"
+          ${onClickAttr}="${escapeHtml(item.key)}"
+        >${escapeHtml(item.label)}</button>
+      `).join("");
+    }
+
+    function renderRouteSelect() {
+      state.filteredRoutes = filterRoutes(state.routeQuery);
+      if (!state.filteredRoutes.length) {
+        els.routeSelect.innerHTML = `<option value="">검색 결과가 없습니다.</option>`;
+        return;
+      }
+
+      if (!state.filteredRoutes.includes(state.pendingRoute)) {
+        state.pendingRoute = state.filteredRoutes[0];
+      }
+
+      els.routeSelect.innerHTML = state.filteredRoutes.map((route) => `
+        <option value="${escapeHtml(route)}" ${route === state.pendingRoute ? "selected" : ""}>${escapeHtml(route)}</option>
+      `).join("");
+    }
+
+    function buildSelectedRouteChipsMarkup() {
+      if (!state.selectedRoutes.length) {
+        return `<span class="route-chip placeholder">아직 지정한 항로가 없습니다.</span>`;
+      }
+
+      return state.selectedRoutes.map((route) => `
+        <span class="route-chip">
+          <span>${escapeHtml(route)}</span>
+          <button type="button" data-remove-route="${escapeHtml(route)}" aria-label="${escapeHtml(route)} 제거">×</button>
+        </span>
+      `).join("");
+    }
+
+    function renderSelectedRoutes() {
+      const markup = buildSelectedRouteChipsMarkup();
+      els.selectedRoutes.innerHTML = markup;
+      els.routeModalSelectedRoutes.innerHTML = markup;
+    }
+
+    function renderTypeButtons() {
+      els.noticeModeButtons.innerHTML = buildNoticeModeButtonsMarkup();
+      els.noticeTypeButtons.innerHTML = buildNoticeTypePanelMarkup();
+    }
+
+    function renderNoticeList() {
+      const rows = getVisibleRows();
+      const activeSelected = state.selectedByType[state.activeType];
+      const scopedItemIds = getGroupScopedItemIds(getNoticeType(state.activeType).groupKey);
+
+      if (!state.selectedRoutes.length) {
+        els.noticeList.innerHTML = `<div class="notice-empty">내 항로 선택 버튼을 눌러 항로를 지정하면 이 위치에 출항시각, 선명, 출항지 항목이 자동으로 표시됩니다.</div>`;
+        return;
+      }
+
+      if (state.loading) {
+        els.noticeList.innerHTML = `<div class="notice-empty">최신 항차 데이터를 불러오는 중입니다.</div>`;
+        return;
+      }
+
+      if (state.error) {
+        els.noticeList.innerHTML = `<div class="notice-empty">${escapeHtml(state.error)}</div>`;
+        return;
+      }
+
+      if (shouldScopeRowsToBaseSelection(state.activeType) && !scopedItemIds.size) {
+        els.noticeList.innerHTML = `<div class="notice-empty">${escapeHtml(getScopedSelectionHint(state.activeType))}</div>`;
+        return;
+      }
+
+      if (!rows.length) {
+        els.noticeList.innerHTML = `<div class="notice-empty">${escapeHtml(getScopedEmptyHint(state.activeType))}</div>`;
+        return;
+      }
+
+      els.noticeList.innerHTML = rows.map((row) => {
+        const badgeTypeKey = getRowAssignedTypeKey(row, activeSelected);
+        const badgeType = badgeTypeKey
+          ? NOTICE_TYPES.find((type) => type.key === badgeTypeKey) || null
+          : null;
+
+        return `
+          <button
+            type="button"
+            class="notice-item ${activeSelected.has(row.itemId) ? "selected" : ""}"
+            data-notice-item="${escapeHtml(row.itemId)}"
+          >
+            <span class="notice-check">${activeSelected.has(row.itemId) ? "✓" : ""}</span>
+            <span class="notice-time">${escapeHtml(formatHHMM(row.sail_time_hhmm))}</span>
+            <span class="notice-main">
+              <span class="notice-name-row">
+                <span class="notice-name">${escapeHtml(row.ship_name)}</span>
+                ${badgeType ? `<span class="status-badge ${escapeHtml(badgeType.badgeClass)}">${escapeHtml(badgeType.label)}</span>` : ""}
+              </span>
+              <span class="notice-sub">
+                ${escapeHtml(row.route_name)} · ${escapeHtml(row.departure_name)} 출항${row.arrival_name ? ` → ${escapeHtml(row.arrival_name)}` : ""}
+              </span>
+            </span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function renderNoticePreview() {
+      els.noticePreviewText.textContent = buildPreviewText();
+    }
+
+    function renderCopyButtons() {
+      const selectedCount = getSelectedItems().length;
+      const hasCopied = NOTICE_TYPES.some((type) => state.copiedByType[type.key].size > 0);
+      const needsCustomText = state.activeMode === "custom" && !String(state.customNoticeText).trim();
+
+      els.copyNoticeBtn.disabled = selectedCount === 0 || needsCustomText;
+      els.copyNoticeBtn.className = `copy-btn ${selectedCount > 0 && !needsCustomText ? "enabled" : "disabled"}`;
+      if (needsCustomText) {
+        els.copyNoticeBtn.textContent = "자유문구를 입력하세요";
+      } else {
+        els.copyNoticeBtn.textContent = selectedCount > 0 ? `${selectedCount}개 선택 · 복사` : "항목을 선택하세요";
+      }
+
+      els.noticeResetBtn.hidden = !(hasCopied && !state.copiedBackup);
+      els.noticeRestoreBtn.hidden = !state.copiedBackup;
+    }
+
+    function renderMeta() {
+      const visibleRows = getVisibleRows();
+      const stale = state.observedDate && state.observedDate !== getTodayKstString();
+      if (state.loading) {
+        els.snapshotBadge.className = "badge info";
+        els.snapshotBadge.textContent = "운항 API 조회 중";
+        els.modalSnapshotBadge.className = "badge info";
+        els.modalSnapshotBadge.textContent = "운항 API 조회 중";
+      } else if (state.error) {
+        els.snapshotBadge.className = "badge warn";
+        els.snapshotBadge.textContent = state.error;
+        els.modalSnapshotBadge.className = "badge warn";
+        els.modalSnapshotBadge.textContent = state.error;
+      } else if (stale) {
+        els.snapshotBadge.className = "badge warn";
+        els.snapshotBadge.textContent = `주의: 최신 기준일 ${state.observedDate}`;
+        els.modalSnapshotBadge.className = "badge warn";
+        els.modalSnapshotBadge.textContent = `주의: 최신 기준일 ${state.observedDate}`;
+      } else if (state.snapshotCreatedAt) {
+        els.snapshotBadge.className = "badge good";
+        els.snapshotBadge.textContent = "운항 API 연결됨";
+        els.modalSnapshotBadge.className = "badge good";
+        els.modalSnapshotBadge.textContent = "운항 API 연결됨";
+      } else {
+        els.snapshotBadge.className = "badge info";
+        els.snapshotBadge.textContent = "운항 API 대기 중";
+        els.modalSnapshotBadge.className = "badge info";
+        els.modalSnapshotBadge.textContent = "운항 API 대기 중";
+      }
+
+      if (state.loading) {
+        els.helperStatusBadge.className = "badge info";
+        els.helperStatusBadge.textContent = "항차 불러오는 중";
+      } else if (state.error) {
+        els.helperStatusBadge.className = "badge warn";
+        els.helperStatusBadge.textContent = "조회 오류";
+      } else {
+        els.helperStatusBadge.className = "badge good";
+        els.helperStatusBadge.textContent = `표시 항차 ${visibleRows.length}건`;
+      }
+
+      if (!state.selectedRoutes.length) {
+        els.selectedRouteBadge.className = "badge info";
+        els.selectedRouteBadge.textContent = "선택 항로 없음";
+      } else {
+        els.selectedRouteBadge.className = "badge info";
+        els.selectedRouteBadge.textContent = `선택 항로 ${state.selectedRoutes.length}개`;
+      }
+
+      els.helperNote.textContent = state.selectedRoutes.length
+        ? `${state.timeFilter === "window" ? "현재 ±2시간" : "오늘 전체"} 기준으로 항차를 보여주고, 오른쪽에는 복사될 문구를 실시간으로 미리보기 합니다. 첫 진입 시에는 자동으로 1회 불러오고, 이후 최신 데이터는 '데이터 새로고침' 버튼을 눌렀을 때만 갱신합니다.`
+        : "페이지를 열면 오늘 항차를 자동으로 1회 불러옵니다. 내 항로 선택 버튼으로 항로를 지정하고, 이후 필요할 때 '데이터 새로고침'으로 최신 항차를 갱신하세요.";
+    }
+
+    function render() {
+      els.routeSearchInput.value = state.routeQuery;
+      renderRouteSelect();
+      pruneSelections();
+      renderSelectedRoutes();
+      updateFilterButtons(els.timeFilterButtons, TIME_FILTERS, state.timeFilter, "data-time-filter");
+      renderTypeButtons();
+      renderNoticeList();
+      renderNoticePreview();
+      renderCopyButtons();
+      renderMeta();
+    }
+
+    function addPendingRoute() {
+      if (!state.pendingRoute) return;
+      if (!state.selectedRoutes.includes(state.pendingRoute)) {
+        state.selectedRoutes.push(state.pendingRoute);
+        state.selectedRoutes.sort((a, b) => a.localeCompare(b, "ko"));
+        persistState();
+        render();
+      }
+    }
+
+    function removeRoute(route) {
+      state.selectedRoutes = state.selectedRoutes.filter((item) => item !== route);
+      persistState();
+      render();
+    }
+
+    function clearAllRoutes() {
+      state.selectedRoutes = [];
+      NOTICE_TYPES.forEach((type) => state.selectedByType[type.key].clear());
+      persistState();
+      render();
+    }
+
+    function toggleRouteModal(open) {
+      els.routePickerModal.hidden = !open;
+      document.body.style.overflow = open ? "hidden" : "";
+      if (open) {
+        renderRouteSelect();
+        renderSelectedRoutes();
+        els.routeSearchInput.focus();
+        els.routeSearchInput.select();
+      }
+    }
+
+    function toggleNoticeItem(itemId) {
+      const activeSet = state.selectedByType[state.activeType];
+      if (activeSet.has(itemId)) {
+        activeSet.delete(itemId);
+      } else {
+        activeSet.add(itemId);
+      }
+      render();
+    }
+
+    async function copyToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.top = "-9999px";
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      const copied = document.execCommand("copy");
+      document.body.removeChild(textarea);
+      if (!copied) {
+        throw new Error("클립보드 복사에 실패했습니다.");
+      }
+    }
+
+    async function copySelectedNotice() {
+      const selectedRows = getSelectedItems();
+      if (!selectedRows.length) return;
+
+      const text = buildCopyText();
+      const activeType = getNoticeType(state.activeType);
+      const group = getNoticeGroupForType(state.activeType);
+      const conflictingTypeKeys = activeType.key === group.baseTypeKey
+        ? []
+        : group.types
+          .filter((type) => type.key !== activeType.key && type.key !== group.baseTypeKey)
+          .map((type) => type.key);
+
+      selectedRows.forEach((row) => {
+        state.copiedByType[state.activeType].add(row.itemId);
+        conflictingTypeKeys.forEach((typeKey) => {
+          state.copiedByType[typeKey].delete(row.itemId);
+        });
+      });
+      state.selectedByType[state.activeType].clear();
+      state.copiedBackup = null;
+      persistState();
+      render();
+
+      try {
+        await copyToClipboard(text);
+        showToast(text);
+      } catch (error) {
+        alert(error instanceof Error ? error.message : "복사에 실패했습니다.");
+      }
+    }
+
+    function resetCopiedHistory() {
+      state.copiedBackup = Object.fromEntries(
+        NOTICE_TYPES.map((type) => [type.key, new Set(state.copiedByType[type.key])])
+      );
+      NOTICE_TYPES.forEach((type) => state.copiedByType[type.key].clear());
+      persistState();
+      render();
+    }
+
+    function restoreCopiedHistory() {
+      if (!state.copiedBackup) return;
+      NOTICE_TYPES.forEach((type) => {
+        state.copiedByType[type.key] = new Set(state.copiedBackup[type.key] || []);
+      });
+      state.copiedBackup = null;
+      persistState();
+      render();
+    }
+
+    function showToast(text) {
+      els.toastText.textContent = text;
+      els.toast.classList.add("show");
+      clearTimeout(els.toast.hideTimer);
+      els.toast.hideTimer = setTimeout(() => {
+        els.toast.classList.remove("show");
+      }, 3600);
+    }
+
+    function bindEvents() {
+      els.refreshBtn.addEventListener("click", () => fetchLatestRows());
+      els.routePickerOpenBtn.addEventListener("click", () => toggleRouteModal(true));
+      els.routePickerCloseBtn.addEventListener("click", () => toggleRouteModal(false));
+
+      els.routePickerModal.addEventListener("click", (event) => {
+        if (event.target === els.routePickerModal) {
+          toggleRouteModal(false);
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !els.routePickerModal.hidden) {
+          toggleRouteModal(false);
+        }
+      });
+
+      document.addEventListener("input", (event) => {
+        const customInput = event.target.closest("[data-custom-notice-input]");
+        if (customInput) {
+          updateCustomNoticeText(customInput.value);
+        }
+      });
+
+      els.routeSearchInput.addEventListener("input", (event) => {
+        state.routeQuery = event.target.value;
+        persistState();
+        renderRouteSelect();
+      });
+
+      els.routeSelect.addEventListener("change", (event) => {
+        state.pendingRoute = event.target.value;
+      });
+
+      els.routeSelect.addEventListener("dblclick", () => {
+        addPendingRoute();
+      });
+
+      els.addRouteBtn.addEventListener("click", () => {
+        addPendingRoute();
+      });
+
+      els.clearRoutesBtn.addEventListener("click", () => {
+        clearAllRoutes();
+      });
+
+      document.addEventListener("click", (event) => {
+        const routeRemoveBtn = event.target.closest("[data-remove-route]");
+        if (routeRemoveBtn) {
+          removeRoute(routeRemoveBtn.getAttribute("data-remove-route"));
+          return;
+        }
+
+        const timeFilterBtn = event.target.closest("[data-time-filter]");
+        if (timeFilterBtn) {
+          state.timeFilter = timeFilterBtn.getAttribute("data-time-filter");
+          persistState();
+          render();
+          return;
+        }
+
+        const modeBtn = event.target.closest("[data-notice-mode]");
+        if (modeBtn) {
+          setActiveMode(modeBtn.getAttribute("data-notice-mode"));
+          return;
+        }
+
+        const typeBtn = event.target.closest("[data-notice-type]");
+        if (typeBtn) {
+          state.activeType = typeBtn.getAttribute("data-notice-type");
+          state.activeMode = getNoticeType(state.activeType).groupKey;
+          persistState();
+          render();
+          return;
+        }
+
+        const noticeItemBtn = event.target.closest("[data-notice-item]");
+        if (noticeItemBtn) {
+          toggleNoticeItem(noticeItemBtn.getAttribute("data-notice-item"));
+        }
+      });
+
+      els.copyNoticeBtn.addEventListener("click", () => {
+        copySelectedNotice();
+      });
+
+      els.noticeResetBtn.addEventListener("click", () => {
+        resetCopiedHistory();
+      });
+
+      els.noticeRestoreBtn.addEventListener("click", () => {
+        restoreCopiedHistory();
+      });
+    }
+
+    async function init() {
+      loadPersistedState();
+      bindEvents();
+      fetchLatestRows();
+    }
+
+    init();
+  </script>
+</body>
+</html>
