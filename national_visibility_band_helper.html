@@ -99,7 +99,9 @@
     }
 
     .hero-copy {
-      max-width: 840px;
+      flex: 1 1 auto;
+      max-width: 1040px;
+      min-width: 0;
       position: relative;
       z-index: 1;
     }
@@ -108,6 +110,7 @@
       display: grid;
       gap: 8px;
       justify-items: end;
+      align-content: start;
       max-width: 360px;
       position: relative;
       z-index: 1;
@@ -127,6 +130,23 @@
       font-size: clamp(28px, 4vw, 42px);
       line-height: 1.05;
       letter-spacing: -0.02em;
+    }
+
+    .hero-settings-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .hero-settings-title {
+      font-size: clamp(20px, 2.6vw, 26px);
+      line-height: 1.12;
+    }
+
+    .hero-profile-summary {
+      justify-content: flex-end;
     }
 
     .hero-copy p:last-child {
@@ -310,6 +330,31 @@
       margin-bottom: 18px;
     }
 
+    .configured-route-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+      border: 1px solid rgba(61, 183, 80, 0.32);
+      border-radius: 999px;
+      background: var(--violet-soft);
+      color: #1f6f37;
+      padding: 0 18px;
+      font-size: 16px;
+      font-weight: 900;
+      white-space: nowrap;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .configured-route-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .configured-route-btn:disabled {
+      opacity: 0.72;
+      transform: none;
+    }
+
     .helper-profile-row {
       display: grid;
       gap: 10px;
@@ -373,6 +418,12 @@
       font-size: 13px;
       font-weight: 800;
       white-space: nowrap;
+    }
+
+    .hero .profile-pill {
+      min-height: 54px;
+      padding: 0 18px;
+      font-size: 14px;
     }
 
     .profile-pill-meta {
@@ -642,9 +693,9 @@
 
     .notice-list {
       display: grid;
-      gap: 10px;
+      gap: 8px;
       align-content: start;
-      max-height: 680px;
+      max-height: 452px;
       overflow: auto;
       padding-right: 4px;
     }
@@ -652,10 +703,10 @@
     .notice-item {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 18px;
+      padding: 10px 14px;
+      border-radius: 16px;
       border: 1px solid var(--line);
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(250, 252, 248, 0.96) 100%);
       text-align: left;
@@ -674,15 +725,15 @@
 
     .notice-check {
       flex: 0 0 auto;
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       border: 2px solid #9daf9a;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       color: #fff;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
     }
 
@@ -692,9 +743,9 @@
     }
 
     .notice-time {
-      width: 56px;
+      width: 50px;
       color: #1d2b1f;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 800;
       letter-spacing: -0.02em;
     }
@@ -708,21 +759,21 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
+      gap: 6px;
+      margin-bottom: 2px;
     }
 
     .notice-name {
       color: var(--text);
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       word-break: keep-all;
     }
 
     .notice-sub {
       color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
+      font-size: 12px;
+      line-height: 1.35;
     }
 
     .status-badge {
@@ -730,8 +781,8 @@
       align-items: center;
       justify-content: center;
       border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 11px;
+      padding: 3px 8px;
+      font-size: 10px;
       font-weight: 800;
       white-space: nowrap;
     }
@@ -1190,6 +1241,34 @@
       gap: 10px;
     }
 
+    .route-picker-toolbar {
+      margin-top: -2px;
+    }
+
+    .route-picker-summary {
+      display: grid;
+      gap: 10px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(244, 249, 241, 0.72);
+    }
+
+    .route-picker-summary-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .route-picker-summary-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
     .btn-pill {
       display: inline-flex;
       align-items: center;
@@ -1229,6 +1308,22 @@
 
     .modal-help-card strong {
       color: var(--text);
+    }
+
+    .configured-route-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .configured-route-item {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.92);
+      padding: 14px 16px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.5;
     }
 
     #notice-copy-toast {
@@ -1300,6 +1395,10 @@
         justify-items: start;
       }
 
+      .hero-settings-head {
+        flex-direction: column;
+      }
+
       .hero-usage {
         text-align: left;
       }
@@ -1356,14 +1455,26 @@
 </head>
 <body>
   <main class="page">
-    <header class="hero">
+<header class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">여객선 운항 관리</p>
-        <h1>전국 운항 공지 밴드 도우미</h1>
+        <div class="hero-settings-head">
+          <div>
+            <p class="eyebrow">저장된 설정</p>
+            <h1 class="hero-settings-title">설정 선택</h1>
+          </div>
+          <div class="profile-summary-row hero-profile-summary">
+            <div id="active-profile-badge" class="badge good">현재 설정</div>
+            <div id="profile-count-badge" class="badge info">설정 0개</div>
+          </div>
+        </div>
+        <div class="profile-switch-row">
+          <div id="profile-switch-desktop" class="profile-switch-desktop"></div>
+          <div id="profile-switch-mobile" class="profile-switch-mobile"></div>
+        </div>
       </div>
       <div class="hero-tools">
         <button id="refresh-btn" class="refresh-btn" type="button">↻ 데이터 새로고침</button>
-        <p class="hero-usage">사용법: 내 항로 선택 후 문구 모드와 항차를 고르면 바로 복사할 수 있습니다.</p>
+        <p class="hero-usage">상단 설정을 누르면 해당 항로 묶음으로 바로 바뀝니다.</p>
       </div>
     </header>
 
@@ -1394,26 +1505,15 @@
               </span>
               <span>내 항로 선택</span>
             </button>
-            <div id="helper-status-badge" class="badge good">표시 항차 0건</div>
+            <div id="helper-status-badge" class="badge good" hidden>표시 항차 0건</div>
           </div>
         </div>
 
         <div class="card-body">
           <div class="helper-topline">
-            <div class="helper-profile-row">
-              <div class="profile-summary-row">
-                <div id="active-profile-badge" class="badge info">현재 설정 기본 설정</div>
-                <div id="profile-count-badge" class="badge info">설정 1개</div>
-              </div>
-              <div id="profile-switch-desktop" class="profile-switch-row profile-switch-desktop"></div>
-              <div id="profile-switch-mobile" class="profile-switch-row profile-switch-mobile"></div>
-            </div>
             <div class="helper-topline-row">
               <div class="helper-topline-main">
-                <div class="helper-route-row">
-                  <div id="selected-route-badge" class="badge info">선택 항로 없음</div>
-                  <div id="selected-routes" class="chip-wrap helper-chip-wrap"></div>
-                </div>
+                <button id="configured-route-open-btn" class="configured-route-btn" type="button">설정 항로 0개</button>
               </div>
               <div class="notice-mode-panel">
                 <p class="field-label">문구 모드</p>
@@ -1472,7 +1572,7 @@
         <div>
           <p class="eyebrow">전국 항로 설정</p>
           <h2 id="route-modal-title">내 항로 선택</h2>
-          <p>항로를 검색한 뒤 더블클릭하거나 추가 버튼을 누르면 내 항로 목록에 들어갑니다. 선택한 항로는 메인 화면과 즉시 동기화됩니다.</p>
+          <p>항로를 검색한 뒤 목록에서 여러 개를 고르고 `내 항로 추가`를 누르면 현재 설정에 한 번에 들어갑니다. 선택한 항로는 메인 화면과 즉시 동기화됩니다.</p>
         </div>
         <div class="modal-head-actions">
           <div id="modal-snapshot-badge" class="badge info">API 확인 중</div>
@@ -1490,12 +1590,11 @@
 
             <div>
               <p class="field-label">전국 항로 목록</p>
-              <select id="route-select" class="select" size="14"></select>
+              <select id="route-select" class="select" size="14" multiple aria-label="전국 항로 목록"></select>
             </div>
 
             <div class="action-row">
               <button id="add-route-btn" class="btn-pill btn-primary" type="button">내 항로 추가</button>
-              <button id="clear-routes-btn" class="btn-pill btn-secondary" type="button">선택 항로 전체 해제</button>
             </div>
           </div>
 
@@ -1508,11 +1607,30 @@
             <div class="modal-help-card">
               <strong>사용 방법</strong><br>
               1. 항로를 검색합니다.<br>
-              2. 목록에서 항로를 더블클릭하거나 `내 항로 추가`를 누릅니다.<br>
-              3. 닫으면 메인 화면 왼쪽 목록과 오른쪽 문구 미리보기가 바로 바뀝니다.
+              2. 목록에서 항로를 클릭해 여러 개를 고른 뒤 `내 항로 추가`를 누릅니다.<br>
+              3. 추가되면 완료 알림이 뜨고, 닫으면 메인 화면 왼쪽 목록과 오른쪽 문구 미리보기가 바로 바뀝니다.
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="configured-routes-modal" class="modal-backdrop" hidden>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="configured-routes-title">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">현재 설정 항로</p>
+          <h2 id="configured-routes-title">설정 항로</h2>
+          <p id="configured-routes-copy">현재 활성 설정에 등록된 항로 목록입니다.</p>
+        </div>
+        <div class="modal-head-actions">
+          <button id="configured-routes-close-btn" class="modal-close-btn" type="button" aria-label="닫기">×</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div id="configured-routes-list" class="configured-route-list"></div>
       </div>
     </div>
   </div>
@@ -1565,7 +1683,7 @@
 
   <div id="notice-copy-toast">
     <pre id="notice-copy-toast-text"></pre>
-    <p>✓ 복사됐어요</p>
+    <p id="notice-copy-toast-label">✓ 복사됐어요</p>
   </div>
 
   <script>
@@ -1625,6 +1743,7 @@
       routes: [],
       filteredRoutes: [],
       pendingRoute: "",
+      pendingRoutes: [],
       profiles: [],
       activeProfileId: "",
       selectedRoutes: [],
@@ -1647,6 +1766,7 @@
       refreshBtn: document.getElementById("refresh-btn"),
       helperStatusBadge: document.getElementById("helper-status-badge"),
       profileManagerOpenBtn: document.getElementById("profile-manager-open-btn"),
+      configuredRouteOpenBtn: document.getElementById("configured-route-open-btn"),
       activeProfileBadge: document.getElementById("active-profile-badge"),
       profileCountBadge: document.getElementById("profile-count-badge"),
       profileSwitchDesktop: document.getElementById("profile-switch-desktop"),
@@ -1659,10 +1779,18 @@
       routeModalSelectionLabel: document.querySelector("#route-picker-modal .modal-side .field-label"),
       routeSearchInput: document.getElementById("route-search-input"),
       routeSelect: document.getElementById("route-select"),
+      selectVisibleRoutesBtn: document.getElementById("select-visible-routes-btn"),
+      clearPendingRoutesBtn: document.getElementById("clear-pending-routes-btn"),
       addRouteBtn: document.getElementById("add-route-btn"),
       clearRoutesBtn: document.getElementById("clear-routes-btn"),
       selectedRoutes: document.getElementById("selected-routes"),
       routeModalSelectedRoutes: document.getElementById("route-modal-selected-routes"),
+      configuredRoutesModal: document.getElementById("configured-routes-modal"),
+      configuredRoutesCloseBtn: document.getElementById("configured-routes-close-btn"),
+      configuredRoutesCopy: document.getElementById("configured-routes-copy"),
+      configuredRoutesList: document.getElementById("configured-routes-list"),
+      routePendingBadge: document.getElementById("route-pending-badge"),
+      routePendingRoutes: document.getElementById("route-pending-routes"),
       selectedRouteBadge: document.getElementById("selected-route-badge"),
       profileManagerModal: document.getElementById("profile-manager-modal"),
       profileManagerCloseBtn: document.getElementById("profile-manager-close-btn"),
@@ -1685,7 +1813,8 @@
       snapshotBadge: document.getElementById("snapshot-badge"),
       modalSnapshotBadge: document.getElementById("modal-snapshot-badge"),
       toast: document.getElementById("notice-copy-toast"),
-      toastText: document.getElementById("notice-copy-toast-text")
+      toastText: document.getElementById("notice-copy-toast-text"),
+      toastLabel: document.getElementById("notice-copy-toast-label")
     };
 
     function loadPersistedState() {
@@ -2200,9 +2329,8 @@
 
         state.routes = [...new Set(state.rows.map((row) => row.route_name))].sort((a, b) => a.localeCompare(b, "ko"));
         state.filteredRoutes = filterRoutes(state.routeQuery);
-        if (!state.pendingRoute || !state.routes.includes(state.pendingRoute)) {
-          state.pendingRoute = state.filteredRoutes[0] || state.routes[0] || "";
-        }
+        state.pendingRoutes = state.pendingRoutes.filter((route) => state.routes.includes(route) && !state.selectedRoutes.includes(route));
+        state.pendingRoute = state.pendingRoutes[0] || "";
         state.profiles = state.profiles.map((profile, index) => normalizeProfile({
           ...profile,
           routes: (profile.routes || []).filter((route) => state.routes.includes(route))
@@ -2225,6 +2353,70 @@
       const value = String(query ?? "").trim().toLowerCase();
       if (!value) return [...state.routes];
       return state.routes.filter((route) => route.toLowerCase().includes(value));
+    }
+
+    function normalizePendingRoutes() {
+      state.pendingRoutes = [...new Set(
+        state.pendingRoutes
+          .filter(Boolean)
+          .filter((route) => state.routes.includes(route))
+          .filter((route) => !state.selectedRoutes.includes(route))
+      )].sort((a, b) => a.localeCompare(b, "ko"));
+      state.pendingRoute = state.pendingRoutes[0] || "";
+    }
+
+    function setPendingRoutes(routes) {
+      state.pendingRoutes = [...new Set((routes || []).filter(Boolean))];
+      normalizePendingRoutes();
+    }
+
+    function togglePendingRoute(route) {
+      if (!route || state.selectedRoutes.includes(route)) return;
+      if (state.pendingRoutes.includes(route)) {
+        setPendingRoutes(state.pendingRoutes.filter((item) => item !== route));
+        return;
+      }
+      setPendingRoutes([...state.pendingRoutes, route]);
+    }
+
+    function renderPendingRoutes() {
+      normalizePendingRoutes();
+      if (els.routePendingBadge) {
+        els.routePendingBadge.textContent = state.pendingRoutes.length ? `선택 ${state.pendingRoutes.length}개` : "선택 없음";
+      }
+      if (els.routePendingRoutes) {
+        els.routePendingRoutes.innerHTML = buildSelectedRouteChipsMarkup(state.pendingRoutes, {
+          removable: false,
+          placeholder: "전국 항로 목록에서 추가할 항로를 선택하세요."
+        });
+      }
+      if (els.addRouteBtn) {
+        els.addRouteBtn.textContent = state.pendingRoutes.length ? `내 항로 ${state.pendingRoutes.length}개 추가` : "내 항로 추가";
+      }
+      if (els.clearPendingRoutesBtn) {
+        els.clearPendingRoutesBtn.disabled = !state.pendingRoutes.length;
+      }
+      if (els.selectVisibleRoutesBtn) {
+        const visibleSelectableCount = state.filteredRoutes.filter((route) => !state.selectedRoutes.includes(route)).length;
+        els.selectVisibleRoutesBtn.disabled = !visibleSelectableCount;
+      }
+    }
+
+    function selectVisibleRoutes() {
+      const visibleRoutes = state.filteredRoutes.filter((route) => !state.selectedRoutes.includes(route));
+      if (!visibleRoutes.length) {
+        showToast("현재 목록에 새로 추가할 항로가 없습니다.", "안내");
+        return;
+      }
+      setPendingRoutes([...state.pendingRoutes, ...visibleRoutes]);
+      renderRouteSelect();
+      renderPendingRoutes();
+    }
+
+    function clearPendingRoutes() {
+      setPendingRoutes([]);
+      renderRouteSelect();
+      renderPendingRoutes();
     }
 
     function getBaseVisibleRows() {
@@ -2344,7 +2536,6 @@
             <textarea
               class="input custom-notice-input"
               data-custom-notice-input
-              placeholder="예: 현재 기상상태를 고려하여 아래 항로 운항계획을 공지합니다."
             >${escapeHtml(state.customNoticeText || "")}</textarea>
           </div>
         `;
@@ -2401,18 +2592,21 @@
 
     function renderRouteSelect() {
       state.filteredRoutes = filterRoutes(state.routeQuery);
+      normalizePendingRoutes();
       if (!state.filteredRoutes.length) {
         els.routeSelect.innerHTML = `<option value="">검색 결과가 없습니다.</option>`;
+        renderPendingRoutes();
         return;
       }
 
-      if (!state.filteredRoutes.includes(state.pendingRoute)) {
-        state.pendingRoute = state.filteredRoutes[0];
-      }
-
       els.routeSelect.innerHTML = state.filteredRoutes.map((route) => `
-        <option value="${escapeHtml(route)}" ${route === state.pendingRoute ? "selected" : ""}>${escapeHtml(route)}</option>
+        <option
+          value="${escapeHtml(route)}"
+          ${state.pendingRoutes.includes(route) ? "selected" : ""}
+          ${state.selectedRoutes.includes(route) ? "disabled" : ""}
+        >${escapeHtml(route)}${state.selectedRoutes.includes(route) ? " · 등록됨" : ""}</option>
       `).join("");
+      renderPendingRoutes();
     }
 
     function buildSelectedRouteChipsMarkup() {
@@ -2701,8 +2895,11 @@
       render();
     }
 
-    function showToast(text) {
+    function showToast(text, label = "✓ 복사됐어요") {
       els.toastText.textContent = text;
+      if (els.toastLabel) {
+        els.toastLabel.textContent = label;
+      }
       els.toast.classList.add("show");
       clearTimeout(els.toast.hideTimer);
       els.toast.hideTimer = setTimeout(() => {
@@ -2730,8 +2927,12 @@
 
     function renderSelectedRoutes() {
       const markup = buildSelectedRouteChipsMarkup(state.selectedRoutes);
-      els.selectedRoutes.innerHTML = markup;
-      els.routeModalSelectedRoutes.innerHTML = markup;
+      if (els.selectedRoutes) {
+        els.selectedRoutes.innerHTML = markup;
+      }
+      if (els.routeModalSelectedRoutes) {
+        els.routeModalSelectedRoutes.innerHTML = markup;
+      }
     }
 
     function renderRouteModalContext() {
@@ -2741,10 +2942,44 @@
         els.routeModalTitle.textContent = `${activeProfile.name} 항로 선택`;
       }
       if (els.routeModalDescription) {
-        els.routeModalDescription.textContent = `${activeProfile.name}에서 사용할 등록 항로를 검색한 뒤 더블클릭하거나 추가 버튼을 누르면 메인 화면과 즉시 동기화됩니다.`;
+        els.routeModalDescription.textContent = `${activeProfile.name}에서 사용할 등록 항로를 검색한 뒤 목록에서 여러 개를 고르고 추가 버튼을 누르면 메인 화면과 즉시 동기화됩니다.`;
       }
       if (els.routeModalSelectionLabel) {
         els.routeModalSelectionLabel.textContent = `${activeProfile.name} 설정의 등록 항로`;
+      }
+    }
+
+    function renderConfiguredRouteSummary() {
+      if (!els.configuredRouteOpenBtn) return;
+      const count = state.selectedRoutes.length;
+      els.configuredRouteOpenBtn.textContent = `설정 항로 ${count}개`;
+    }
+
+    function renderConfiguredRoutesModal() {
+      if (!els.configuredRoutesList) return;
+      const activeProfile = getActiveProfile();
+      if (els.configuredRoutesCopy) {
+        els.configuredRoutesCopy.textContent = activeProfile
+          ? `${activeProfile.name}에 현재 등록된 항로 ${state.selectedRoutes.length}개입니다.`
+          : `현재 등록된 항로 ${state.selectedRoutes.length}개입니다.`;
+      }
+
+      if (!state.selectedRoutes.length) {
+        els.configuredRoutesList.innerHTML = `<div class="configured-route-item">등록된 항로가 없습니다.</div>`;
+        return;
+      }
+
+      els.configuredRoutesList.innerHTML = state.selectedRoutes.map((route, index) => `
+        <div class="configured-route-item">${index + 1}. ${escapeHtml(route)}</div>
+      `).join("");
+    }
+
+    function toggleConfiguredRoutesModal(open) {
+      if (!els.configuredRoutesModal) return;
+      els.configuredRoutesModal.hidden = !open;
+      document.body.style.overflow = open ? "hidden" : "";
+      if (open) {
+        renderConfiguredRoutesModal();
       }
     }
 
@@ -2793,12 +3028,20 @@
     function renderProfiles() {
       ensureProfilesState();
       const activeProfile = getActiveProfile();
-      els.profileSwitchDesktop.innerHTML = buildProfileSwitchMarkup("desktop");
-      els.profileSwitchMobile.innerHTML = buildProfileSwitchMarkup("mobile");
-      if (activeProfile) {
+      if (els.profileSwitchDesktop) {
+        els.profileSwitchDesktop.innerHTML = buildProfileSwitchMarkup("desktop");
+      }
+      if (els.profileSwitchMobile) {
+        els.profileSwitchMobile.innerHTML = buildProfileSwitchMarkup("mobile");
+      }
+      if (activeProfile && els.activeProfileBadge) {
         els.activeProfileBadge.textContent = `현재 설정 ${activeProfile.name}`;
       }
-      els.profileCountBadge.textContent = `설정 ${state.profiles.length}개`;
+      if (els.profileCountBadge) {
+        els.profileCountBadge.textContent = `설정 ${state.profiles.length}개`;
+      }
+      renderConfiguredRouteSummary();
+      renderConfiguredRoutesModal();
       renderProfileManager();
       renderRouteModalContext();
     }
@@ -2851,13 +3094,31 @@
     }
 
     function addPendingRoute() {
-      if (!state.pendingRoute) return;
-      if (!state.selectedRoutes.includes(state.pendingRoute)) {
-        const nextRoutes = [...state.selectedRoutes, state.pendingRoute].sort((a, b) => a.localeCompare(b, "ko"));
-        updateActiveProfileRoutes(nextRoutes);
-        persistState();
-        render();
+      normalizePendingRoutes();
+      if (!state.pendingRoutes.length) {
+        showToast("전국 항로 목록에서 추가할 항로를 먼저 선택하세요.", "안내");
+        return;
       }
+
+      const addedRoutes = state.pendingRoutes.filter((route) => !state.selectedRoutes.includes(route));
+      if (!addedRoutes.length) {
+        showToast("선택한 항로가 이미 모두 등록되어 있습니다.", "안내");
+        clearPendingRoutes();
+        return;
+      }
+
+      const nextRoutes = [...state.selectedRoutes, ...addedRoutes].sort((a, b) => a.localeCompare(b, "ko"));
+      const activeProfile = getActiveProfile();
+      const routeToastPreview = addedRoutes.slice(0, 3).join("\n");
+      const routeToastSuffix = addedRoutes.length > 3 ? `\n외 ${addedRoutes.length - 3}개` : "";
+      updateActiveProfileRoutes(nextRoutes);
+      setPendingRoutes([]);
+      persistState();
+      render();
+      showToast(
+        `${activeProfile ? `${activeProfile.name} 설정에 추가되었습니다.\n` : ""}${routeToastPreview}${routeToastSuffix}`,
+        `✓ ${addedRoutes.length}개 항로가 추가됐어요`
+      );
     }
 
     function removeRoute(route) {
@@ -2868,6 +3129,7 @@
 
     function clearAllRoutes() {
       updateActiveProfileRoutes([]);
+      setPendingRoutes([]);
       NOTICE_TYPES.forEach((type) => state.selectedByType[type.key].clear());
       persistState();
       render();
@@ -2877,6 +3139,7 @@
       els.routePickerModal.hidden = !open;
       document.body.style.overflow = open ? "hidden" : "";
       if (open) {
+        setPendingRoutes([]);
         renderRouteModalContext();
         renderRouteSelect();
         renderSelectedRoutes();
@@ -2888,7 +3151,6 @@
     function renderMeta() {
       const visibleRows = getVisibleRows();
       const stale = state.observedDate && state.observedDate !== getTodayKstString();
-      const activeProfile = getActiveProfile();
       if (state.loading) {
         els.snapshotBadge.className = "badge info";
         els.snapshotBadge.textContent = "운항 데이터 확인 중";
@@ -2927,16 +3189,7 @@
         els.helperStatusBadge.textContent = `표시 항차 ${visibleRows.length}건`;
       }
 
-      if (!state.selectedRoutes.length) {
-        els.selectedRouteBadge.className = "badge info";
-        els.selectedRouteBadge.textContent = activeProfile ? `${activeProfile.name} 항로 없음` : "선택 항로 없음";
-      } else {
-        els.selectedRouteBadge.className = "badge info";
-        els.selectedRouteBadge.textContent = activeProfile
-          ? `${activeProfile.name} 항로 ${state.selectedRoutes.length}개`
-          : `선택 항로 ${state.selectedRoutes.length}개`;
-      }
-
+      renderConfiguredRouteSummary();
       els.helperNote.textContent = state.selectedRoutes.length
         ? `${state.timeFilter === "window" ? "현재 ±2시간" : "오늘 전체"} 기준으로 항차를 보여주고, 설정만 바꿔도 새 API 호출 없이 같은 스냅샷 데이터 안에서 문구를 바로 분리합니다.`
         : "페이지를 열면 배포된 최신 운항 스냅샷을 자동으로 1회 불러옵니다. 설정을 바꾸기만 해도 새 API 호출 없이 이미 불러온 데이터 안에서 바로 표시합니다.";
@@ -2960,15 +3213,28 @@
     function bindEvents() {
       els.refreshBtn.addEventListener("click", () => fetchLatestRows());
       els.profileManagerOpenBtn.addEventListener("click", () => toggleProfileManagerModal(true));
+      if (els.configuredRouteOpenBtn) {
+        els.configuredRouteOpenBtn.addEventListener("click", () => toggleConfiguredRoutesModal(true));
+      }
       els.routePickerOpenBtn.addEventListener("click", () => toggleRouteModal(true));
       els.routePickerCloseBtn.addEventListener("click", () => toggleRouteModal(false));
       els.profileManagerCloseBtn.addEventListener("click", () => toggleProfileManagerModal(false));
+      if (els.configuredRoutesCloseBtn) {
+        els.configuredRoutesCloseBtn.addEventListener("click", () => toggleConfiguredRoutesModal(false));
+      }
 
       els.routePickerModal.addEventListener("click", (event) => {
         if (event.target === els.routePickerModal) {
           toggleRouteModal(false);
         }
       });
+      if (els.configuredRoutesModal) {
+        els.configuredRoutesModal.addEventListener("click", (event) => {
+          if (event.target === els.configuredRoutesModal) {
+            toggleConfiguredRoutesModal(false);
+          }
+        });
+      }
       els.profileManagerModal.addEventListener("click", (event) => {
         if (event.target === els.profileManagerModal) {
           toggleProfileManagerModal(false);
@@ -2978,6 +3244,10 @@
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && !els.routePickerModal.hidden) {
           toggleRouteModal(false);
+          return;
+        }
+        if (els.configuredRoutesModal && event.key === "Escape" && !els.configuredRoutesModal.hidden) {
+          toggleConfiguredRoutesModal(false);
           return;
         }
         if (event.key === "Escape" && !els.profileManagerModal.hidden) {
@@ -2999,20 +3269,52 @@
       });
 
       els.routeSelect.addEventListener("change", (event) => {
-        state.pendingRoute = event.target.value;
+        setPendingRoutes([...event.target.selectedOptions].map((option) => option.value));
+        renderRouteSelect();
+      });
+
+      els.routeSelect.addEventListener("mousedown", (event) => {
+        const option = event.target.closest("option");
+        if (!option || option.disabled) return;
+        event.preventDefault();
+        togglePendingRoute(option.value);
+        renderRouteSelect();
+      });
+
+      els.routeSelect.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        const option = els.routeSelect.options[els.routeSelect.selectedIndex];
+        if (!option || option.disabled) return;
+        event.preventDefault();
+        togglePendingRoute(option.value);
+        renderRouteSelect();
       });
 
       els.routeSelect.addEventListener("dblclick", () => {
         addPendingRoute();
       });
 
+      if (els.selectVisibleRoutesBtn) {
+        els.selectVisibleRoutesBtn.addEventListener("click", () => {
+          selectVisibleRoutes();
+        });
+      }
+
+      if (els.clearPendingRoutesBtn) {
+        els.clearPendingRoutesBtn.addEventListener("click", () => {
+          clearPendingRoutes();
+        });
+      }
+
       els.addRouteBtn.addEventListener("click", () => {
         addPendingRoute();
       });
 
-      els.clearRoutesBtn.addEventListener("click", () => {
-        clearAllRoutes();
-      });
+      if (els.clearRoutesBtn) {
+        els.clearRoutesBtn.addEventListener("click", () => {
+          clearAllRoutes();
+        });
+      }
 
       document.addEventListener("click", (event) => {
         const profileSwitchBtn = event.target.closest("[data-profile-switch]");
