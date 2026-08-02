@@ -1,0 +1,43 @@
+name: Update Operation Snapshot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/update-operation-snapshot.yml"
+      - "scripts/update-operation-snapshot.mjs"
+
+jobs:
+  update-snapshot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate latest operation snapshot
+        run: node scripts/update-operation-snapshot.mjs
+
+      - name: Commit snapshot if changed
+        run: |
+          if git diff --quiet -- data/operation-snapshot.json; then
+            echo "No snapshot changes."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/operation-snapshot.json
+          git commit -m "Update operation snapshot"
+          git push
