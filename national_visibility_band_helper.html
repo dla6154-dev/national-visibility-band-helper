@@ -258,6 +258,30 @@
       background: rgba(61, 183, 80, 0.22);
     }
 
+    .profile-manage-btn {
+      order: 2;
+      border-color: var(--sky-line);
+      background: var(--sky-soft);
+      color: #2f6f95;
+    }
+
+    .head-actions > .route-picker-btn:not(.profile-manage-btn) {
+      order: 1;
+    }
+
+    .head-actions > .badge {
+      order: 3;
+    }
+
+    .profile-manage-btn:hover {
+      border-color: rgba(82, 143, 193, 0.46);
+      background: rgba(117, 197, 255, 0.22);
+    }
+
+    .profile-manage-btn .route-picker-icon {
+      background: linear-gradient(180deg, #6fb7e9 0%, #4f92cb 100%);
+    }
+
     .route-picker-icon {
       display: inline-flex;
       align-items: center;
@@ -284,6 +308,108 @@
       display: grid;
       gap: 10px;
       margin-bottom: 18px;
+    }
+
+    .helper-profile-row {
+      display: grid;
+      gap: 10px;
+    }
+
+    .profile-summary-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .profile-switch-row {
+      min-width: 0;
+    }
+
+    .profile-switch-desktop {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .profile-switch-mobile {
+      display: none;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+    }
+
+    .profile-switch-empty {
+      border: 1px dashed var(--line-strong);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--muted);
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .profile-pill,
+    .profile-card {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--muted);
+      transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+    }
+
+    .profile-pill:hover,
+    .profile-card:hover,
+    .profile-list-item:hover {
+      transform: translateY(-1px);
+    }
+
+    .profile-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .profile-pill-meta {
+      color: inherit;
+      opacity: 0.72;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .profile-card {
+      min-width: 176px;
+      border-radius: 22px;
+      padding: 14px 16px;
+      display: grid;
+      gap: 6px;
+      flex: 0 0 auto;
+      text-align: left;
+    }
+
+    .profile-card strong {
+      font-size: 15px;
+      line-height: 1.2;
+      color: inherit;
+    }
+
+    .profile-card span {
+      font-size: 12px;
+      color: inherit;
+      opacity: 0.76;
+    }
+
+    .profile-pill.active,
+    .profile-card.active,
+    .profile-list-item.active {
+      border-color: rgba(61, 183, 80, 0.34);
+      background: rgba(61, 183, 80, 0.16);
+      color: #1f6f37;
     }
 
     .helper-topline-row {
@@ -384,6 +510,12 @@
       text-align: center;
       padding: 0;
       flex: 0 0 auto;
+    }
+
+    .route-chip.static {
+      border-color: var(--line);
+      background: rgba(255, 255, 255, 0.84);
+      color: var(--text);
     }
 
     .helper-split {
@@ -966,6 +1098,57 @@
       gap: 18px;
     }
 
+    .profile-modal-grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.15fr);
+      gap: 18px;
+    }
+
+    .profile-list-panel,
+    .profile-editor-panel {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .profile-list {
+      display: grid;
+      gap: 10px;
+      max-height: 420px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .profile-list-item {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 14px 16px;
+      text-align: left;
+      color: var(--text);
+      display: grid;
+      gap: 4px;
+      transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+    }
+
+    .profile-list-item strong {
+      font-size: 15px;
+      line-height: 1.24;
+    }
+
+    .profile-list-item span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .profile-editor-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
     .picker-panel,
     .modal-side {
       display: grid;
@@ -1090,7 +1273,8 @@
 
     @media (max-width: 1080px) {
       .helper-split,
-      .modal-grid {
+      .modal-grid,
+      .profile-modal-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1127,6 +1311,14 @@
 
       .helper-topline-row {
         grid-template-columns: 1fr;
+      }
+
+      .profile-switch-desktop {
+        display: none;
+      }
+
+      .profile-switch-mobile {
+        display: flex;
       }
 
       .notice-mode-panel {
@@ -1183,6 +1375,15 @@
             <h2>운항 공지 문구 추출</h2>
           </div>
           <div class="head-actions">
+            <button id="profile-manager-open-btn" class="route-picker-btn profile-manage-btn" type="button" title="?ㅼ젙 愿由?" aria-label="?ㅼ젙 愿由?">
+              <span class="route-picker-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M12 4.5 13.2 7l2.7.4-1.95 1.86.47 2.64L12 10.7 9.58 11.9l.47-2.64L8.1 7.4l2.7-.4L12 4.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                  <circle cx="12" cy="15.5" r="3.25" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+              </span>
+              <span>?ㅼ젙 愿由?</span>
+            </button>
             <button id="route-picker-open-btn" class="route-picker-btn" type="button" title="내 항로 선택" aria-label="내 항로 선택">
               <span class="route-picker-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none">
@@ -1199,6 +1400,14 @@
 
         <div class="card-body">
           <div class="helper-topline">
+            <div class="helper-profile-row">
+              <div class="profile-summary-row">
+                <div id="active-profile-badge" class="badge info">?꾩옱 ?ㅼ젙 湲곕낯 ?ㅼ젙</div>
+                <div id="profile-count-badge" class="badge info">?ㅼ젙 1媛?</div>
+              </div>
+              <div id="profile-switch-desktop" class="profile-switch-row profile-switch-desktop"></div>
+              <div id="profile-switch-mobile" class="profile-switch-row profile-switch-mobile"></div>
+            </div>
             <div class="helper-topline-row">
               <div class="helper-topline-main">
                 <div class="helper-route-row">
@@ -1308,6 +1517,52 @@
     </div>
   </div>
 
+  <div id="profile-manager-modal" class="modal-backdrop" hidden>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-manager-title">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">?? ??</p>
+          <h2 id="profile-manager-title">?? ?? ?? ??</h2>
+          <p>??? ?? ? ??? ??, ??? ??? API? ?? ???? ?? ?? ??? ?? ?? ?? ??? ?? ????? ?????.</p>
+        </div>
+        <div class="modal-head-actions">
+          <button id="profile-manager-close-btn" class="modal-close-btn" type="button" aria-label="??">?</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="profile-modal-grid">
+          <div class="profile-list-panel">
+            <div class="action-row">
+              <button id="add-profile-btn" class="btn-pill btn-primary" type="button">?? ??</button>
+            </div>
+            <div id="profile-list" class="profile-list"></div>
+          </div>
+          <div class="profile-editor-panel">
+            <div>
+              <p class="field-label">?? ??</p>
+              <input id="profile-name-input" class="input" type="text" maxlength="30" placeholder="?: ???">
+            </div>
+            <div class="profile-editor-actions">
+              <button id="save-profile-name-btn" class="btn-pill btn-primary" type="button">?? ??</button>
+              <button id="edit-profile-routes-btn" class="btn-pill btn-secondary" type="button">? ?? ?? ??</button>
+              <button id="delete-profile-btn" class="btn-pill btn-secondary" type="button">?? ??</button>
+            </div>
+            <div>
+              <p class="field-label">?? ??</p>
+              <div id="profile-manager-routes" class="chip-wrap"></div>
+            </div>
+            <div class="modal-help-card">
+              <strong>?? ??</strong><br>
+              1. ?? ??? ??? ????.<br>
+              2. `? ?? ?? ??`? ??? ?? `? ?? ??` ??? ?? ?? ???? ????.<br>
+              3. ?? ????? ??? ???? ?? ??? ??? ?? ?? ??? ?????.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="notice-copy-toast">
     <pre id="notice-copy-toast-text"></pre>
     <p>✓ 복사됐어요</p>
@@ -1364,11 +1619,16 @@
       { key: "window", label: "현재 ±2시간" }
     ];
 
+    const DEFAULT_PROFILE_NAME = "湲곕낯 ?ㅼ젙";
+    const MAX_PROFILE_COUNT = 12;
+
     const state = {
       rows: [],
       routes: [],
       filteredRoutes: [],
       pendingRoute: "",
+      profiles: [],
+      activeProfileId: "",
       selectedRoutes: [],
       routeQuery: "",
       timeFilter: "all",
@@ -1388,9 +1648,17 @@
     const els = {
       refreshBtn: document.getElementById("refresh-btn"),
       helperStatusBadge: document.getElementById("helper-status-badge"),
+      profileManagerOpenBtn: document.getElementById("profile-manager-open-btn"),
+      activeProfileBadge: document.getElementById("active-profile-badge"),
+      profileCountBadge: document.getElementById("profile-count-badge"),
+      profileSwitchDesktop: document.getElementById("profile-switch-desktop"),
+      profileSwitchMobile: document.getElementById("profile-switch-mobile"),
       routePickerOpenBtn: document.getElementById("route-picker-open-btn"),
       routePickerModal: document.getElementById("route-picker-modal"),
       routePickerCloseBtn: document.getElementById("route-picker-close-btn"),
+      routeModalTitle: document.getElementById("route-modal-title"),
+      routeModalDescription: document.querySelector("#route-picker-modal .modal-head > div p:last-child"),
+      routeModalSelectionLabel: document.querySelector("#route-picker-modal .modal-side .field-label"),
       routeSearchInput: document.getElementById("route-search-input"),
       routeSelect: document.getElementById("route-select"),
       addRouteBtn: document.getElementById("add-route-btn"),
@@ -1398,6 +1666,15 @@
       selectedRoutes: document.getElementById("selected-routes"),
       routeModalSelectedRoutes: document.getElementById("route-modal-selected-routes"),
       selectedRouteBadge: document.getElementById("selected-route-badge"),
+      profileManagerModal: document.getElementById("profile-manager-modal"),
+      profileManagerCloseBtn: document.getElementById("profile-manager-close-btn"),
+      profileList: document.getElementById("profile-list"),
+      profileNameInput: document.getElementById("profile-name-input"),
+      saveProfileNameBtn: document.getElementById("save-profile-name-btn"),
+      editProfileRoutesBtn: document.getElementById("edit-profile-routes-btn"),
+      deleteProfileBtn: document.getElementById("delete-profile-btn"),
+      addProfileBtn: document.getElementById("add-profile-btn"),
+      profileManagerRoutes: document.getElementById("profile-manager-routes"),
       helperNote: document.getElementById("helper-note"),
       noticeModeButtons: document.getElementById("notice-mode-buttons"),
       noticeTypeButtons: document.getElementById("notice-type-buttons"),
@@ -1419,6 +1696,12 @@
         if (!raw) return;
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed.selectedRoutes)) state.selectedRoutes = parsed.selectedRoutes.filter(Boolean);
+        if (Array.isArray(parsed.profiles)) {
+          state.profiles = parsed.profiles
+            .map((profile, index) => normalizeProfile(profile, index))
+            .filter(Boolean);
+        }
+        if (typeof parsed.activeProfileId === "string") state.activeProfileId = parsed.activeProfileId;
         if (typeof parsed.routeQuery === "string") state.routeQuery = parsed.routeQuery;
         if (typeof parsed.timeFilter === "string") state.timeFilter = parsed.timeFilter;
         if (typeof parsed.activeMode === "string" && NOTICE_GROUPS.some((group) => group.key === parsed.activeMode)) {
@@ -1436,6 +1719,7 @@
         if (getNoticeType(state.activeType).groupKey !== state.activeMode) {
           state.activeType = getNoticeGroup(state.activeMode).baseTypeKey;
         }
+        ensureProfilesState();
       } catch (error) {
         console.warn("저장된 상태 복원 실패", error);
       }
@@ -1443,6 +1727,12 @@
 
     function persistState() {
       const payload = {
+        profiles: state.profiles.map((profile) => ({
+          id: profile.id,
+          name: profile.name,
+          routes: [...profile.routes]
+        })),
+        activeProfileId: state.activeProfileId,
         selectedRoutes: state.selectedRoutes,
         routeQuery: state.routeQuery,
         timeFilter: state.timeFilter,
@@ -1454,6 +1744,78 @@
         )
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    }
+
+    function sanitizeProfileName(value) {
+      return String(value ?? "").trim().replace(/\s+/g, " ").slice(0, 30);
+    }
+
+    function buildProfileId(index = 0) {
+      return `profile-${Date.now()}-${index}-${Math.random().toString(36).slice(2, 8)}`;
+    }
+
+    function normalizeProfile(profile, index = 0) {
+      if (!profile || typeof profile !== "object") return null;
+      const name = sanitizeProfileName(profile.name) || `${DEFAULT_PROFILE_NAME} ${index + 1}`;
+      const routes = Array.isArray(profile.routes)
+        ? [...new Set(profile.routes.filter(Boolean))]
+        : [];
+      return {
+        id: String(profile.id || buildProfileId(index)),
+        name,
+        routes
+      };
+    }
+
+    function createProfile(name = DEFAULT_PROFILE_NAME, routes = []) {
+      return normalizeProfile({ id: buildProfileId(state.profiles.length), name, routes }, state.profiles.length);
+    }
+
+    function buildNextProfileName() {
+      const used = new Set(state.profiles.map((profile) => profile.name));
+      if (!used.has(DEFAULT_PROFILE_NAME)) return DEFAULT_PROFILE_NAME;
+      let index = 2;
+      while (used.has(`${DEFAULT_PROFILE_NAME} ${index}`)) index += 1;
+      return `${DEFAULT_PROFILE_NAME} ${index}`;
+    }
+
+    function getProfileById(profileId = state.activeProfileId) {
+      return state.profiles.find((profile) => profile.id === profileId) || null;
+    }
+
+    function getActiveProfile() {
+      return getProfileById(state.activeProfileId);
+    }
+
+    function syncSelectedRoutesFromActiveProfile() {
+      const activeProfile = getActiveProfile();
+      state.selectedRoutes = activeProfile ? [...activeProfile.routes] : [];
+    }
+
+    function ensureProfilesState() {
+      if (!state.profiles.length) {
+        state.profiles = [createProfile(DEFAULT_PROFILE_NAME, state.selectedRoutes)];
+      }
+      if (!state.activeProfileId || !getProfileById(state.activeProfileId)) {
+        state.activeProfileId = state.profiles[0]?.id || "";
+      }
+      syncSelectedRoutesFromActiveProfile();
+    }
+
+    function updateActiveProfileRoutes(nextRoutes) {
+      const activeProfile = getActiveProfile();
+      if (!activeProfile) return;
+      activeProfile.routes = [...new Set((nextRoutes || []).filter(Boolean))];
+      state.selectedRoutes = [...activeProfile.routes];
+    }
+
+    function setActiveProfile(profileId, options = {}) {
+      const { skipPersist = false, skipRender = false } = options;
+      if (!getProfileById(profileId)) return;
+      state.activeProfileId = profileId;
+      syncSelectedRoutesFromActiveProfile();
+      if (!skipPersist) persistState();
+      if (!skipRender) render();
     }
 
     function escapeHtml(value) {
@@ -1847,7 +2209,11 @@
         if (!state.pendingRoute || !state.routes.includes(state.pendingRoute)) {
           state.pendingRoute = state.filteredRoutes[0] || state.routes[0] || "";
         }
-        state.selectedRoutes = state.selectedRoutes.filter((route) => state.routes.includes(route));
+        state.profiles = state.profiles.map((profile, index) => normalizeProfile({
+          ...profile,
+          routes: (profile.routes || []).filter((route) => state.routes.includes(route))
+        }, index)).filter(Boolean);
+        ensureProfilesState();
 
         state.snapshotCreatedAt = fetchedAt;
         state.observedDate = normalizeApiDate(getTodayApiDateString());
@@ -2350,20 +2716,278 @@
       }, 3600);
     }
 
+    function syncLayoutMode() {
+      document.body.dataset.layoutMode = window.innerWidth <= 720 ? "mobile" : "desktop";
+    }
+
+    function buildSelectedRouteChipsMarkup(routes = state.selectedRoutes, options = {}) {
+      const { removable = true, placeholder = "?꾩쭅 吏?뺥븳 ??줈媛 ?놁뒿?덈떎." } = options;
+      if (!routes.length) {
+        return `<span class="route-chip placeholder">${escapeHtml(placeholder)}</span>`;
+      }
+
+      return routes.map((route) => `
+        <span class="route-chip ${removable ? "" : "static"}">
+          <span>${escapeHtml(route)}</span>
+          ${removable ? `<button type="button" data-remove-route="${escapeHtml(route)}" aria-label="${escapeHtml(route)} ?쒓굅">횞</button>` : ""}
+        </span>
+      `).join("");
+    }
+
+    function renderSelectedRoutes() {
+      const markup = buildSelectedRouteChipsMarkup(state.selectedRoutes);
+      els.selectedRoutes.innerHTML = markup;
+      els.routeModalSelectedRoutes.innerHTML = markup;
+    }
+
+    function renderRouteModalContext() {
+      const activeProfile = getActiveProfile();
+      if (!activeProfile) return;
+      if (els.routeModalTitle) {
+        els.routeModalTitle.textContent = `${activeProfile.name} ??줈 ?좏깮`;
+      }
+      if (els.routeModalDescription) {
+        els.routeModalDescription.textContent = `${activeProfile.name}?먯꽌 ?ъ슜???깅줉 ??줈瑜?寃?됲븳 ???붾툝?대┃?섍굅??異붽? 踰꾪듉???뚮Ⅴ硫?硫붿씤 ?붾㈃怨?利됱떆 ?숆린?붾맗?덈떎.`;
+      }
+      if (els.routeModalSelectionLabel) {
+        els.routeModalSelectionLabel.textContent = `${activeProfile.name} ?ㅼ젙??깅줉 ???줈`;
+      }
+    }
+
+    function buildProfileSwitchMarkup(variant = "desktop") {
+      if (!state.profiles.length) {
+        return `<div class="profile-switch-empty">?꾩쭅 留뚮뱾???ㅼ젙???놁뒿?덈떎.</div>`;
+      }
+
+      return state.profiles.map((profile) => {
+        const activeClass = profile.id === state.activeProfileId ? "active" : "";
+        if (variant === "mobile") {
+          return `
+            <button type="button" class="profile-card ${activeClass}" data-profile-switch="${escapeHtml(profile.id)}">
+              <strong>${escapeHtml(profile.name)}</strong>
+              <span>??줈 ${profile.routes.length}媛?</span>
+            </button>
+          `;
+        }
+        return `
+          <button type="button" class="profile-pill ${activeClass}" data-profile-switch="${escapeHtml(profile.id)}">
+            <span>${escapeHtml(profile.name)}</span>
+            <span class="profile-pill-meta">??줈 ${profile.routes.length}媛?</span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function renderProfileManager() {
+      ensureProfilesState();
+      const activeProfile = getActiveProfile();
+      if (!activeProfile) return;
+      els.profileList.innerHTML = state.profiles.map((profile) => `
+        <button type="button" class="profile-list-item ${profile.id === state.activeProfileId ? "active" : ""}" data-profile-manage-select="${escapeHtml(profile.id)}">
+          <strong>${escapeHtml(profile.name)}</strong>
+          <span>??줈 ${profile.routes.length}媛?</span>
+        </button>
+      `).join("");
+      els.profileNameInput.value = activeProfile.name;
+      els.profileManagerRoutes.innerHTML = buildSelectedRouteChipsMarkup(activeProfile.routes, {
+        removable: false,
+        placeholder: "?깅줉???줈媛 ?놁뒿?덈떎."
+      });
+      els.deleteProfileBtn.disabled = state.profiles.length <= 1;
+    }
+
+    function renderProfiles() {
+      ensureProfilesState();
+      const activeProfile = getActiveProfile();
+      els.profileSwitchDesktop.innerHTML = buildProfileSwitchMarkup("desktop");
+      els.profileSwitchMobile.innerHTML = buildProfileSwitchMarkup("mobile");
+      if (activeProfile) {
+        els.activeProfileBadge.textContent = `?꾩옱 ?ㅼ젙 ${activeProfile.name}`;
+      }
+      els.profileCountBadge.textContent = `?ㅼ젙 ${state.profiles.length}媛?`;
+      renderProfileManager();
+      renderRouteModalContext();
+    }
+
+    function toggleProfileManagerModal(open) {
+      els.profileManagerModal.hidden = !open;
+      document.body.style.overflow = open ? "hidden" : "";
+      if (open) {
+        renderProfileManager();
+        els.profileNameInput.focus();
+        els.profileNameInput.select();
+      }
+    }
+
+    function addProfile() {
+      if (state.profiles.length >= MAX_PROFILE_COUNT) {
+        alert(`?ㅼ젙??理쒕? ${MAX_PROFILE_COUNT}媛쒓퉴吏 留뚮뱾 ???덉뒿?덈떎.`);
+        return;
+      }
+      const nextProfile = createProfile(buildNextProfileName(), []);
+      state.profiles.push(nextProfile);
+      setActiveProfile(nextProfile.id, { skipPersist: true, skipRender: true });
+      persistState();
+      render();
+      if (!els.profileManagerModal.hidden) {
+        els.profileNameInput.focus();
+        els.profileNameInput.select();
+      }
+    }
+
+    function saveActiveProfileName() {
+      const activeProfile = getActiveProfile();
+      if (!activeProfile) return;
+      const nextName = sanitizeProfileName(els.profileNameInput.value) || activeProfile.name;
+      activeProfile.name = nextName;
+      persistState();
+      render();
+    }
+
+    function deleteActiveProfile() {
+      if (state.profiles.length <= 1) return;
+      const activeProfile = getActiveProfile();
+      if (!activeProfile) return;
+      if (!confirm(`'${activeProfile.name}' ?ㅼ젙???쒖젙?쇨퉴?붾뒗 ?ㅼ젙?⑸땲源?`)) return;
+      state.profiles = state.profiles.filter((profile) => profile.id !== activeProfile.id);
+      state.activeProfileId = state.profiles[0]?.id || "";
+      syncSelectedRoutesFromActiveProfile();
+      persistState();
+      render();
+    }
+
+    function addPendingRoute() {
+      if (!state.pendingRoute) return;
+      if (!state.selectedRoutes.includes(state.pendingRoute)) {
+        const nextRoutes = [...state.selectedRoutes, state.pendingRoute].sort((a, b) => a.localeCompare(b, "ko"));
+        updateActiveProfileRoutes(nextRoutes);
+        persistState();
+        render();
+      }
+    }
+
+    function removeRoute(route) {
+      updateActiveProfileRoutes(state.selectedRoutes.filter((item) => item !== route));
+      persistState();
+      render();
+    }
+
+    function clearAllRoutes() {
+      updateActiveProfileRoutes([]);
+      NOTICE_TYPES.forEach((type) => state.selectedByType[type.key].clear());
+      persistState();
+      render();
+    }
+
+    function toggleRouteModal(open) {
+      els.routePickerModal.hidden = !open;
+      document.body.style.overflow = open ? "hidden" : "";
+      if (open) {
+        renderRouteModalContext();
+        renderRouteSelect();
+        renderSelectedRoutes();
+        els.routeSearchInput.focus();
+        els.routeSearchInput.select();
+      }
+    }
+
+    function renderMeta() {
+      const visibleRows = getVisibleRows();
+      const stale = state.observedDate && state.observedDate !== getTodayKstString();
+      const activeProfile = getActiveProfile();
+      if (state.loading) {
+        els.snapshotBadge.className = "badge info";
+        els.snapshotBadge.textContent = "?댄빆 API 議고쉶 以?";
+        els.modalSnapshotBadge.className = "badge info";
+        els.modalSnapshotBadge.textContent = "?댄빆 API 議고쉶 以?";
+      } else if (state.error) {
+        els.snapshotBadge.className = "badge warn";
+        els.snapshotBadge.textContent = state.error;
+        els.modalSnapshotBadge.className = "badge warn";
+        els.modalSnapshotBadge.textContent = state.error;
+      } else if (stale) {
+        els.snapshotBadge.className = "badge warn";
+        els.snapshotBadge.textContent = `二쇱쓽: 理쒖떊 湲곗???${state.observedDate}`;
+        els.modalSnapshotBadge.className = "badge warn";
+        els.modalSnapshotBadge.textContent = `二쇱쓽: 理쒖떊 湲곗???${state.observedDate}`;
+      } else if (state.snapshotCreatedAt) {
+        els.snapshotBadge.className = "badge good";
+        els.snapshotBadge.textContent = "?댄빆 API ?곌껐??";
+        els.modalSnapshotBadge.className = "badge good";
+        els.modalSnapshotBadge.textContent = "?댄빆 API ?곌껐??";
+      } else {
+        els.snapshotBadge.className = "badge info";
+        els.snapshotBadge.textContent = "?댄빆 API ?湲?以?";
+        els.modalSnapshotBadge.className = "badge info";
+        els.modalSnapshotBadge.textContent = "?댄빆 API ?湲?以?";
+      }
+
+      if (state.loading) {
+        els.helperStatusBadge.className = "badge info";
+        els.helperStatusBadge.textContent = "??감 遺덈윭?ㅻ뒗 以?";
+      } else if (state.error) {
+        els.helperStatusBadge.className = "badge warn";
+        els.helperStatusBadge.textContent = "議고쉶 ?ㅻ쪟";
+      } else {
+        els.helperStatusBadge.className = "badge good";
+        els.helperStatusBadge.textContent = `?쒖떆 ??감 ${visibleRows.length}嫄?`;
+      }
+
+      if (!state.selectedRoutes.length) {
+        els.selectedRouteBadge.className = "badge info";
+        els.selectedRouteBadge.textContent = activeProfile ? `${activeProfile.name} ??줈 ?놁쓬` : "?좏깮 ??줈 ?놁쓬";
+      } else {
+        els.selectedRouteBadge.className = "badge info";
+        els.selectedRouteBadge.textContent = activeProfile
+          ? `${activeProfile.name} ??줈 ${state.selectedRoutes.length}媛?`
+          : `?좏깮 ??줈 ${state.selectedRoutes.length}媛?`;
+      }
+
+      els.helperNote.textContent = state.selectedRoutes.length
+        ? `${state.timeFilter === "window" ? "?꾩옱 짹2?쒓컙" : "?ㅻ뒛 ?꾩껜"} 湲곗??쇰줈 ??감瑜?蹂댁뿬二쇨퀬, ?ㅼ젙?쒕쭔 諛붽퓭?도룄 API瑜??ㅼ떆 遺덈윭?ㅺ린 蹂대떎 媛숈? ?곗씠???덉뿉??臾멸뎄瑜?諛붾줈 遺꾨━?⑸땲??`
+        : "?섏씠吏瑜??대㈃ ?ㅻ뒛 ??감瑜??먮룞?쇰줈 1??遺덈윭?듬땲?? ?ㅼ젙???붽컖留?諛붽퓭???덈㈃ API瑜??ㅼ떆 遺덈윭?ㅺ린 蹂대떎 ?대? 遺덈윭???곗씠???덉뿉??諛붾줈 ?쒖떆?⑸땲??";
+    }
+
+    function render() {
+      syncLayoutMode();
+      renderProfiles();
+      els.routeSearchInput.value = state.routeQuery;
+      renderRouteSelect();
+      pruneSelections();
+      renderSelectedRoutes();
+      updateFilterButtons(els.timeFilterButtons, TIME_FILTERS, state.timeFilter, "data-time-filter");
+      renderTypeButtons();
+      renderNoticeList();
+      renderNoticePreview();
+      renderCopyButtons();
+      renderMeta();
+    }
+
     function bindEvents() {
       els.refreshBtn.addEventListener("click", () => fetchLatestRows());
+      els.profileManagerOpenBtn.addEventListener("click", () => toggleProfileManagerModal(true));
       els.routePickerOpenBtn.addEventListener("click", () => toggleRouteModal(true));
       els.routePickerCloseBtn.addEventListener("click", () => toggleRouteModal(false));
+      els.profileManagerCloseBtn.addEventListener("click", () => toggleProfileManagerModal(false));
 
       els.routePickerModal.addEventListener("click", (event) => {
         if (event.target === els.routePickerModal) {
           toggleRouteModal(false);
         }
       });
+      els.profileManagerModal.addEventListener("click", (event) => {
+        if (event.target === els.profileManagerModal) {
+          toggleProfileManagerModal(false);
+        }
+      });
 
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && !els.routePickerModal.hidden) {
           toggleRouteModal(false);
+          return;
+        }
+        if (event.key === "Escape" && !els.profileManagerModal.hidden) {
+          toggleProfileManagerModal(false);
         }
       });
 
@@ -2397,6 +3021,18 @@
       });
 
       document.addEventListener("click", (event) => {
+        const profileSwitchBtn = event.target.closest("[data-profile-switch]");
+        if (profileSwitchBtn) {
+          setActiveProfile(profileSwitchBtn.getAttribute("data-profile-switch"));
+          return;
+        }
+
+        const profileManageSelectBtn = event.target.closest("[data-profile-manage-select]");
+        if (profileManageSelectBtn) {
+          setActiveProfile(profileManageSelectBtn.getAttribute("data-profile-manage-select"));
+          return;
+        }
+
         const routeRemoveBtn = event.target.closest("[data-remove-route]");
         if (routeRemoveBtn) {
           removeRoute(routeRemoveBtn.getAttribute("data-remove-route"));
@@ -2442,6 +3078,34 @@
 
       els.noticeRestoreBtn.addEventListener("click", () => {
         restoreCopiedHistory();
+      });
+
+      els.addProfileBtn.addEventListener("click", () => {
+        addProfile();
+      });
+
+      els.saveProfileNameBtn.addEventListener("click", () => {
+        saveActiveProfileName();
+      });
+
+      els.editProfileRoutesBtn.addEventListener("click", () => {
+        toggleProfileManagerModal(false);
+        toggleRouteModal(true);
+      });
+
+      els.deleteProfileBtn.addEventListener("click", () => {
+        deleteActiveProfile();
+      });
+
+      els.profileNameInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          saveActiveProfileName();
+        }
+      });
+
+      window.addEventListener("resize", () => {
+        syncLayoutMode();
       });
     }
 
