@@ -1375,14 +1375,14 @@
             <h2>운항 공지 문구 추출</h2>
           </div>
           <div class="head-actions">
-            <button id="profile-manager-open-btn" class="route-picker-btn profile-manage-btn" type="button" title="?ㅼ젙 愿由?" aria-label="?ㅼ젙 愿由?">
+            <button id="profile-manager-open-btn" class="route-picker-btn profile-manage-btn" type="button" title="설정 관리" aria-label="설정 관리">
               <span class="route-picker-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none">
                   <path d="M12 4.5 13.2 7l2.7.4-1.95 1.86.47 2.64L12 10.7 9.58 11.9l.47-2.64L8.1 7.4l2.7-.4L12 4.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
                   <circle cx="12" cy="15.5" r="3.25" stroke="currentColor" stroke-width="1.6"/>
                 </svg>
               </span>
-              <span>?ㅼ젙 愿由?</span>
+              <span>설정 관리</span>
             </button>
             <button id="route-picker-open-btn" class="route-picker-btn" type="button" title="내 항로 선택" aria-label="내 항로 선택">
               <span class="route-picker-icon" aria-hidden="true">
@@ -1402,8 +1402,8 @@
           <div class="helper-topline">
             <div class="helper-profile-row">
               <div class="profile-summary-row">
-                <div id="active-profile-badge" class="badge info">?꾩옱 ?ㅼ젙 湲곕낯 ?ㅼ젙</div>
-                <div id="profile-count-badge" class="badge info">?ㅼ젙 1媛?</div>
+                <div id="active-profile-badge" class="badge info">현재 설정 기본 설정</div>
+                <div id="profile-count-badge" class="badge info">설정 1개</div>
               </div>
               <div id="profile-switch-desktop" class="profile-switch-row profile-switch-desktop"></div>
               <div id="profile-switch-mobile" class="profile-switch-row profile-switch-mobile"></div>
@@ -1521,41 +1521,41 @@
     <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-manager-title">
       <div class="modal-head">
         <div>
-          <p class="eyebrow">?? ??</p>
-          <h2 id="profile-manager-title">?? ?? ?? ??</h2>
-          <p>??? ?? ? ??? ??, ??? ??? API? ?? ???? ?? ?? ??? ?? ?? ?? ??? ?? ????? ?????.</p>
+          <p class="eyebrow">설정 관리</p>
+          <h2 id="profile-manager-title">항로 설정 묶음 관리</h2>
+          <p>설정을 여러 개 만들어 두고, 설정만 바꿔도 API를 다시 호출하지 않고 이미 불러온 오늘 운항 목록 안에서 바로 필터링하는 구조입니다.</p>
         </div>
         <div class="modal-head-actions">
-          <button id="profile-manager-close-btn" class="modal-close-btn" type="button" aria-label="??">?</button>
+          <button id="profile-manager-close-btn" class="modal-close-btn" type="button" aria-label="닫기">×</button>
         </div>
       </div>
       <div class="modal-body">
         <div class="profile-modal-grid">
           <div class="profile-list-panel">
             <div class="action-row">
-              <button id="add-profile-btn" class="btn-pill btn-primary" type="button">?? ??</button>
+              <button id="add-profile-btn" class="btn-pill btn-primary" type="button">설정 추가</button>
             </div>
             <div id="profile-list" class="profile-list"></div>
           </div>
           <div class="profile-editor-panel">
             <div>
-              <p class="field-label">?? ??</p>
-              <input id="profile-name-input" class="input" type="text" maxlength="30" placeholder="?: ???">
+              <p class="field-label">설정 이름</p>
+              <input id="profile-name-input" class="input" type="text" maxlength="30" placeholder="예: 목포권">
             </div>
             <div class="profile-editor-actions">
-              <button id="save-profile-name-btn" class="btn-pill btn-primary" type="button">?? ??</button>
-              <button id="edit-profile-routes-btn" class="btn-pill btn-secondary" type="button">? ?? ?? ??</button>
-              <button id="delete-profile-btn" class="btn-pill btn-secondary" type="button">?? ??</button>
+              <button id="save-profile-name-btn" class="btn-pill btn-primary" type="button">이름 저장</button>
+              <button id="edit-profile-routes-btn" class="btn-pill btn-secondary" type="button">이 설정 항로 편집</button>
+              <button id="delete-profile-btn" class="btn-pill btn-secondary" type="button">설정 삭제</button>
             </div>
             <div>
-              <p class="field-label">?? ??</p>
+              <p class="field-label">등록 항로</p>
               <div id="profile-manager-routes" class="chip-wrap"></div>
             </div>
             <div class="modal-help-card">
-              <strong>?? ??</strong><br>
-              1. ?? ??? ??? ????.<br>
-              2. `? ?? ?? ??`? ??? ?? `? ?? ??` ??? ?? ?? ???? ????.<br>
-              3. ?? ????? ??? ???? ?? ??? ??? ?? ?? ??? ?????.
+              <strong>사용 방법</strong><br>
+              1. 설정 이름을 만들고 고릅니다.<br>
+              2. `이 설정 항로 편집`을 누르면 기존 `내 항로 선택` 화면이 현재 설정 기준으로 열립니다.<br>
+              3. 메인 화면에서는 설정만 바꿔가며 같은 데이터 안에서 바로 공지 문구를 분리합니다.
             </div>
           </div>
         </div>
@@ -1619,7 +1619,7 @@
       { key: "window", label: "현재 ±2시간" }
     ];
 
-    const DEFAULT_PROFILE_NAME = "湲곕낯 ?ㅼ젙";
+    const DEFAULT_PROFILE_NAME = "기본 설정";
     const MAX_PROFILE_COUNT = 12;
 
     const state = {
@@ -1750,13 +1750,22 @@
       return String(value ?? "").trim().replace(/\s+/g, " ").slice(0, 30);
     }
 
+    function migrateLegacyProfileName(value) {
+      const name = sanitizeProfileName(value);
+      const legacyDefaultMatch = name.match(/^湲곕낯 \?ㅼ젙(?: (\d+))?$/);
+      if (legacyDefaultMatch) {
+        return legacyDefaultMatch[1] ? `${DEFAULT_PROFILE_NAME} ${legacyDefaultMatch[1]}` : DEFAULT_PROFILE_NAME;
+      }
+      return name;
+    }
+
     function buildProfileId(index = 0) {
       return `profile-${Date.now()}-${index}-${Math.random().toString(36).slice(2, 8)}`;
     }
 
     function normalizeProfile(profile, index = 0) {
       if (!profile || typeof profile !== "object") return null;
-      const name = sanitizeProfileName(profile.name) || `${DEFAULT_PROFILE_NAME} ${index + 1}`;
+      const name = migrateLegacyProfileName(profile.name) || `${DEFAULT_PROFILE_NAME} ${index + 1}`;
       const routes = Array.isArray(profile.routes)
         ? [...new Set(profile.routes.filter(Boolean))]
         : [];
@@ -2721,7 +2730,7 @@
     }
 
     function buildSelectedRouteChipsMarkup(routes = state.selectedRoutes, options = {}) {
-      const { removable = true, placeholder = "?꾩쭅 吏?뺥븳 ??줈媛 ?놁뒿?덈떎." } = options;
+      const { removable = true, placeholder = "아직 지정한 항로가 없습니다." } = options;
       if (!routes.length) {
         return `<span class="route-chip placeholder">${escapeHtml(placeholder)}</span>`;
       }
@@ -2729,7 +2738,7 @@
       return routes.map((route) => `
         <span class="route-chip ${removable ? "" : "static"}">
           <span>${escapeHtml(route)}</span>
-          ${removable ? `<button type="button" data-remove-route="${escapeHtml(route)}" aria-label="${escapeHtml(route)} ?쒓굅">횞</button>` : ""}
+          ${removable ? `<button type="button" data-remove-route="${escapeHtml(route)}" aria-label="${escapeHtml(route)} 제거">×</button>` : ""}
         </span>
       `).join("");
     }
@@ -2744,19 +2753,19 @@
       const activeProfile = getActiveProfile();
       if (!activeProfile) return;
       if (els.routeModalTitle) {
-        els.routeModalTitle.textContent = `${activeProfile.name} ??줈 ?좏깮`;
+        els.routeModalTitle.textContent = `${activeProfile.name} 항로 선택`;
       }
       if (els.routeModalDescription) {
-        els.routeModalDescription.textContent = `${activeProfile.name}?먯꽌 ?ъ슜???깅줉 ??줈瑜?寃?됲븳 ???붾툝?대┃?섍굅??異붽? 踰꾪듉???뚮Ⅴ硫?硫붿씤 ?붾㈃怨?利됱떆 ?숆린?붾맗?덈떎.`;
+        els.routeModalDescription.textContent = `${activeProfile.name}에서 사용할 등록 항로를 검색한 뒤 더블클릭하거나 추가 버튼을 누르면 메인 화면과 즉시 동기화됩니다.`;
       }
       if (els.routeModalSelectionLabel) {
-        els.routeModalSelectionLabel.textContent = `${activeProfile.name} ?ㅼ젙??깅줉 ???줈`;
+        els.routeModalSelectionLabel.textContent = `${activeProfile.name} 설정의 등록 항로`;
       }
     }
 
     function buildProfileSwitchMarkup(variant = "desktop") {
       if (!state.profiles.length) {
-        return `<div class="profile-switch-empty">?꾩쭅 留뚮뱾???ㅼ젙???놁뒿?덈떎.</div>`;
+        return `<div class="profile-switch-empty">아직 만든 설정이 없습니다.</div>`;
       }
 
       return state.profiles.map((profile) => {
@@ -2765,14 +2774,14 @@
           return `
             <button type="button" class="profile-card ${activeClass}" data-profile-switch="${escapeHtml(profile.id)}">
               <strong>${escapeHtml(profile.name)}</strong>
-              <span>??줈 ${profile.routes.length}媛?</span>
+              <span>항로 ${profile.routes.length}개</span>
             </button>
           `;
         }
         return `
           <button type="button" class="profile-pill ${activeClass}" data-profile-switch="${escapeHtml(profile.id)}">
             <span>${escapeHtml(profile.name)}</span>
-            <span class="profile-pill-meta">??줈 ${profile.routes.length}媛?</span>
+            <span class="profile-pill-meta">항로 ${profile.routes.length}개</span>
           </button>
         `;
       }).join("");
@@ -2785,13 +2794,13 @@
       els.profileList.innerHTML = state.profiles.map((profile) => `
         <button type="button" class="profile-list-item ${profile.id === state.activeProfileId ? "active" : ""}" data-profile-manage-select="${escapeHtml(profile.id)}">
           <strong>${escapeHtml(profile.name)}</strong>
-          <span>??줈 ${profile.routes.length}媛?</span>
+          <span>항로 ${profile.routes.length}개</span>
         </button>
       `).join("");
       els.profileNameInput.value = activeProfile.name;
       els.profileManagerRoutes.innerHTML = buildSelectedRouteChipsMarkup(activeProfile.routes, {
         removable: false,
-        placeholder: "?깅줉???줈媛 ?놁뒿?덈떎."
+        placeholder: "등록된 항로가 없습니다."
       });
       els.deleteProfileBtn.disabled = state.profiles.length <= 1;
     }
@@ -2802,9 +2811,9 @@
       els.profileSwitchDesktop.innerHTML = buildProfileSwitchMarkup("desktop");
       els.profileSwitchMobile.innerHTML = buildProfileSwitchMarkup("mobile");
       if (activeProfile) {
-        els.activeProfileBadge.textContent = `?꾩옱 ?ㅼ젙 ${activeProfile.name}`;
+        els.activeProfileBadge.textContent = `현재 설정 ${activeProfile.name}`;
       }
-      els.profileCountBadge.textContent = `?ㅼ젙 ${state.profiles.length}媛?`;
+      els.profileCountBadge.textContent = `설정 ${state.profiles.length}개`;
       renderProfileManager();
       renderRouteModalContext();
     }
@@ -2821,7 +2830,7 @@
 
     function addProfile() {
       if (state.profiles.length >= MAX_PROFILE_COUNT) {
-        alert(`?ㅼ젙??理쒕? ${MAX_PROFILE_COUNT}媛쒓퉴吏 留뚮뱾 ???덉뒿?덈떎.`);
+        alert(`설정은 최대 ${MAX_PROFILE_COUNT}개까지 만들 수 있습니다.`);
         return;
       }
       const nextProfile = createProfile(buildNextProfileName(), []);
@@ -2848,7 +2857,7 @@
       if (state.profiles.length <= 1) return;
       const activeProfile = getActiveProfile();
       if (!activeProfile) return;
-      if (!confirm(`'${activeProfile.name}' ?ㅼ젙???쒖젙?쇨퉴?붾뒗 ?ㅼ젙?⑸땲源?`)) return;
+      if (!confirm(`'${activeProfile.name}' 설정을 삭제할까요?`)) return;
       state.profiles = state.profiles.filter((profile) => profile.id !== activeProfile.id);
       state.activeProfileId = state.profiles[0]?.id || "";
       syncSelectedRoutesFromActiveProfile();
@@ -2897,9 +2906,9 @@
       const activeProfile = getActiveProfile();
       if (state.loading) {
         els.snapshotBadge.className = "badge info";
-        els.snapshotBadge.textContent = "?댄빆 API 議고쉶 以?";
+        els.snapshotBadge.textContent = "운항 API 조회 중";
         els.modalSnapshotBadge.className = "badge info";
-        els.modalSnapshotBadge.textContent = "?댄빆 API 議고쉶 以?";
+        els.modalSnapshotBadge.textContent = "운항 API 조회 중";
       } else if (state.error) {
         els.snapshotBadge.className = "badge warn";
         els.snapshotBadge.textContent = state.error;
@@ -2907,45 +2916,45 @@
         els.modalSnapshotBadge.textContent = state.error;
       } else if (stale) {
         els.snapshotBadge.className = "badge warn";
-        els.snapshotBadge.textContent = `二쇱쓽: 理쒖떊 湲곗???${state.observedDate}`;
+        els.snapshotBadge.textContent = `주의: 최신 기준일 ${state.observedDate}`;
         els.modalSnapshotBadge.className = "badge warn";
-        els.modalSnapshotBadge.textContent = `二쇱쓽: 理쒖떊 湲곗???${state.observedDate}`;
+        els.modalSnapshotBadge.textContent = `주의: 최신 기준일 ${state.observedDate}`;
       } else if (state.snapshotCreatedAt) {
         els.snapshotBadge.className = "badge good";
-        els.snapshotBadge.textContent = "?댄빆 API ?곌껐??";
+        els.snapshotBadge.textContent = "운항 API 연결됨";
         els.modalSnapshotBadge.className = "badge good";
-        els.modalSnapshotBadge.textContent = "?댄빆 API ?곌껐??";
+        els.modalSnapshotBadge.textContent = "운항 API 연결됨";
       } else {
         els.snapshotBadge.className = "badge info";
-        els.snapshotBadge.textContent = "?댄빆 API ?湲?以?";
+        els.snapshotBadge.textContent = "운항 API 대기 중";
         els.modalSnapshotBadge.className = "badge info";
-        els.modalSnapshotBadge.textContent = "?댄빆 API ?湲?以?";
+        els.modalSnapshotBadge.textContent = "운항 API 대기 중";
       }
 
       if (state.loading) {
         els.helperStatusBadge.className = "badge info";
-        els.helperStatusBadge.textContent = "??감 遺덈윭?ㅻ뒗 以?";
+        els.helperStatusBadge.textContent = "항차 불러오는 중";
       } else if (state.error) {
         els.helperStatusBadge.className = "badge warn";
-        els.helperStatusBadge.textContent = "議고쉶 ?ㅻ쪟";
+        els.helperStatusBadge.textContent = "조회 오류";
       } else {
         els.helperStatusBadge.className = "badge good";
-        els.helperStatusBadge.textContent = `?쒖떆 ??감 ${visibleRows.length}嫄?`;
+        els.helperStatusBadge.textContent = `표시 항차 ${visibleRows.length}건`;
       }
 
       if (!state.selectedRoutes.length) {
         els.selectedRouteBadge.className = "badge info";
-        els.selectedRouteBadge.textContent = activeProfile ? `${activeProfile.name} ??줈 ?놁쓬` : "?좏깮 ??줈 ?놁쓬";
+        els.selectedRouteBadge.textContent = activeProfile ? `${activeProfile.name} 항로 없음` : "선택 항로 없음";
       } else {
         els.selectedRouteBadge.className = "badge info";
         els.selectedRouteBadge.textContent = activeProfile
-          ? `${activeProfile.name} ??줈 ${state.selectedRoutes.length}媛?`
-          : `?좏깮 ??줈 ${state.selectedRoutes.length}媛?`;
+          ? `${activeProfile.name} 항로 ${state.selectedRoutes.length}개`
+          : `선택 항로 ${state.selectedRoutes.length}개`;
       }
 
       els.helperNote.textContent = state.selectedRoutes.length
-        ? `${state.timeFilter === "window" ? "?꾩옱 짹2?쒓컙" : "?ㅻ뒛 ?꾩껜"} 湲곗??쇰줈 ??감瑜?蹂댁뿬二쇨퀬, ?ㅼ젙?쒕쭔 諛붽퓭?도룄 API瑜??ㅼ떆 遺덈윭?ㅺ린 蹂대떎 媛숈? ?곗씠???덉뿉??臾멸뎄瑜?諛붾줈 遺꾨━?⑸땲??`
-        : "?섏씠吏瑜??대㈃ ?ㅻ뒛 ??감瑜??먮룞?쇰줈 1??遺덈윭?듬땲?? ?ㅼ젙???붽컖留?諛붽퓭???덈㈃ API瑜??ㅼ떆 遺덈윭?ㅺ린 蹂대떎 ?대? 遺덈윭???곗씠???덉뿉??諛붾줈 ?쒖떆?⑸땲??";
+        ? `${state.timeFilter === "window" ? "현재 ±2시간" : "오늘 전체"} 기준으로 항차를 보여주고, 설정만 바꿔도 API를 다시 부르기보다 같은 데이터 안에서 문구를 바로 분리합니다.`
+        : "페이지를 열면 오늘 항차를 자동으로 1회 불러옵니다. 설정을 바꾸기만 해도 API를 다시 부르기보다 이미 불러온 데이터 안에서 바로 표시합니다.";
     }
 
     function render() {
