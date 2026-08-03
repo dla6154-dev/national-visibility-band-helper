@@ -970,6 +970,28 @@
       background: rgba(255, 255, 255, 0.82);
     }
 
+    .notice-section-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 2px 4px;
+      color: #6f7e6d;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .notice-section-divider::before,
+    .notice-section-divider::after {
+      content: "";
+      flex: 1 1 auto;
+      height: 1px;
+      background: rgba(111, 126, 109, 0.24);
+    }
+
+    .notice-section-divider span {
+      white-space: nowrap;
+    }
+
     .copy-actions {
       display: grid;
       gap: 10px;
@@ -2809,22 +2831,34 @@
       renderPendingRoutes();
     }
 
-    function getBaseVisibleRows() {
+    function sortNoticeRows(rows) {
+      return [...rows].sort((a, b) => {
+        const aTime = hhmmToMinutes(a.sail_time_hhmm);
+        const bTime = hhmmToMinutes(b.sail_time_hhmm);
+        if (aTime !== bTime) return aTime - bTime;
+        return a.route_name.localeCompare(b.route_name, "ko") || a.ship_name.localeCompare(b.ship_name, "ko");
+      });
+    }
+
+    function getRouteScopedRows() {
       if (!state.selectedRoutes.length) return [];
       const routeSet = new Set(state.selectedRoutes);
-      return state.rows
-        .filter((row) => routeSet.has(row.route_name))
-        .filter((row) => state.timeFilter === "all" ? true : isWithinTwoHourWindow(row))
-        .sort((a, b) => {
-          const aTime = hhmmToMinutes(a.sail_time_hhmm);
-          const bTime = hhmmToMinutes(b.sail_time_hhmm);
-          if (aTime !== bTime) return aTime - bTime;
-          return a.route_name.localeCompare(b.route_name, "ko") || a.ship_name.localeCompare(b.ship_name, "ko");
-        });
+      return state.rows.filter((row) => routeSet.has(row.route_name));
+    }
+
+    function applyActiveTimeFilter(rows, enabled = state.timeFilter === "window") {
+      return enabled ? rows.filter((row) => isWithinTwoHourWindow(row)) : [...rows];
+    }
+
+    function getBaseVisibleRows() {
+      return sortNoticeRows(applyActiveTimeFilter(getRouteScopedRows()));
     }
 
     function getGroupScopedItemIds(groupKey) {
       const group = getNoticeGroup(groupKey);
+      if (group.key === "visibility") {
+        return new Set([...state.copiedByType[group.baseTypeKey]]);
+      }
       return new Set([
         ...state.selectedByType[group.baseTypeKey],
         ...state.copiedByType[group.baseTypeKey]
@@ -2836,9 +2870,61 @@
       return type.groupKey === "visibility" && !isBaseNoticeType(typeKey);
     }
 
-    function getVisibleRows(typeKey = state.activeType) {
-      const rows = getBaseVisibleRows();
+    function isVisibilityFollowUpType(typeKey = state.activeType) {
+      return typeKey === "visibility_ctrl" || typeKey === "visibility_normal";
+    }
+
+    function getVisibilityListBuckets(typeKey = state.activeType) {
+      const routeRows = getRouteScopedRows();
+      const activeIds = new Set(state.copiedByType[typeKey] || []);
+      const waitIds = new Set(state.copiedByType.visibility_wait || []);
+      const ctrlIds = new Set(state.copiedByType.visibility_ctrl || []);
+      const normalIds = new Set(state.copiedByType.visibility_normal || []);
+      const oppositeIds = typeKey === "visibility_ctrl" ? normalIds : ctrlIds;
+
+      const processedRows = sortNoticeRows(applyActiveTimeFilter(
+        routeRows.filter((row) => activeIds.has(row.itemId) && !oppositeIds.has(row.itemId))
+      ));
+
+      const pendingRows = sortNoticeRows(
+        routeRows.filter((row) => (
+          waitIds.has(row.itemId)
+          && !activeIds.has(row.itemId)
+          && !oppositeIds.has(row.itemId)
+        ))
+      );
+
+      return {
+        processedRows,
+        pendingRows,
+        allRows: [...processedRows, ...pendingRows]
+      };
+    }
+
+    function getCrossStatusBlockedItemIds(typeKey = state.activeType) {
       const type = getNoticeType(typeKey);
+      if (!type || !["ctrl", "normal"].includes(type.badgeClass)) {
+        return new Set();
+      }
+      const group = getNoticeGroup(type.groupKey);
+      const blockedBadgeClass = type.badgeClass === "ctrl" ? "normal" : "ctrl";
+      return new Set(
+        group.types
+          .filter((candidate) => candidate.badgeClass === blockedBadgeClass)
+          .flatMap((candidate) => [
+            ...state.selectedByType[candidate.key],
+            ...state.copiedByType[candidate.key]
+          ])
+      );
+    }
+
+    function getVisibleRows(typeKey = state.activeType) {
+      const type = getNoticeType(typeKey);
+      if (isVisibilityFollowUpType(typeKey)) {
+        return getVisibilityListBuckets(typeKey).allRows;
+      }
+
+      const rows = getBaseVisibleRows();
       let visibleRows = rows;
 
       if (shouldScopeRowsToBaseSelection(typeKey)) {
@@ -2846,11 +2932,8 @@
         visibleRows = visibleRows.filter((row) => scopedItemIds.has(row.itemId));
       }
 
-      if (type.key === "visibility_normal") {
-        const blockedItemIds = new Set([
-          ...state.selectedByType.visibility_ctrl,
-          ...state.copiedByType.visibility_ctrl
-        ]);
+      const blockedItemIds = getCrossStatusBlockedItemIds(typeKey);
+      if (blockedItemIds.size) {
         visibleRows = visibleRows.filter((row) => !blockedItemIds.has(row.itemId));
       }
 
@@ -2885,12 +2968,80 @@
       return orderedTypeKeys.find((typeKey) => state.copiedByType[typeKey].has(row.itemId)) || "";
     }
 
+    function getVisibilityRowBadgeTypes(row, activeSet = state.selectedByType[state.activeType]) {
+      if (!row?.itemId) return [];
+      if (activeSet.has(row.itemId)) {
+        return [getNoticeType(state.activeType)];
+      }
+      if (state.copiedByType.visibility_ctrl.has(row.itemId)) {
+        return [getNoticeType("visibility_ctrl")];
+      }
+      if (state.copiedByType.visibility_normal.has(row.itemId)) {
+        return [getNoticeType("visibility_normal")];
+      }
+      if (state.copiedByType.visibility_wait.has(row.itemId)) {
+        return [getNoticeType("visibility_wait")];
+      }
+      return [];
+    }
+
     function getRowBadgeTypes(row, activeSet = state.selectedByType[state.activeType]) {
       if (!row?.itemId) return [];
+      if (getNoticeType(state.activeType).groupKey === "visibility") {
+        return getVisibilityRowBadgeTypes(row, activeSet);
+      }
       return NOTICE_TYPES.filter((type) => (
         (type.key === state.activeType && activeSet.has(row.itemId))
         || state.copiedByType[type.key].has(row.itemId)
       ));
+    }
+
+    function buildNoticeItemMarkup(row, activeSelected = state.selectedByType[state.activeType]) {
+      const badgeTypes = getRowBadgeTypes(row, activeSelected);
+      return `
+        <button
+          type="button"
+          class="notice-item ${activeSelected.has(row.itemId) ? "selected" : ""}"
+          data-notice-item="${escapeHtml(row.itemId)}"
+        >
+          <span class="notice-check">${activeSelected.has(row.itemId) ? "✓" : ""}</span>
+          <span class="notice-time">${escapeHtml(formatHHMM(row.sail_time_hhmm))}</span>
+          <span class="notice-main">
+            <span class="notice-name-row">
+              <span class="notice-name">${escapeHtml(row.ship_name)}</span>
+              ${badgeTypes.length ? `
+                <span class="copied-badges">
+                  ${badgeTypes.map((badgeType) => `
+                    <span class="status-badge ${escapeHtml(badgeType.badgeClass)}">${escapeHtml(badgeType.label)}</span>
+                  `).join("")}
+                </span>
+              ` : ""}
+            </span>
+            <span class="notice-sub">
+              ${escapeHtml(row.route_name)} · ${escapeHtml(row.departure_name)} 출항${row.arrival_name ? ` → ${escapeHtml(row.arrival_name)}` : ""}
+            </span>
+          </span>
+        </button>
+      `;
+    }
+
+    function buildVisibilityFollowUpListMarkup(typeKey = state.activeType, activeSelected = state.selectedByType[state.activeType]) {
+      const { processedRows, pendingRows } = getVisibilityListBuckets(typeKey);
+      const sections = [];
+
+      if (processedRows.length) {
+        sections.push(processedRows.map((row) => buildNoticeItemMarkup(row, activeSelected)).join(""));
+      }
+
+      if (processedRows.length && pendingRows.length) {
+        sections.push(`<div class="notice-section-divider"><span>출항대기</span></div>`);
+      }
+
+      if (pendingRows.length) {
+        sections.push(pendingRows.map((row) => buildNoticeItemMarkup(row, activeSelected)).join(""));
+      }
+
+      return sections.join("");
     }
 
     function getScopedSelectionHint(typeKey = state.activeType) {
@@ -2900,6 +3051,9 @@
         .filter((type) => type.key !== group.baseTypeKey)
         .map((type) => type.label)
         .join("와 ");
+      if (group.key === "visibility") {
+        return `${baseType.label} 탭에서 먼저 복사한 항목만 ${siblingLabels} 탭에 표시됩니다. ${baseType.label} 탭에서 항목을 선택한 뒤 복사하세요.`;
+      }
       return `${siblingLabels}은 ${baseType.label}에서 먼저 누른 항목만 표시됩니다. ${baseType.label} 탭에서 항목을 먼저 선택하세요.`;
     }
 
@@ -2910,6 +3064,9 @@
 
       const group = getNoticeGroupForType(typeKey);
       const baseType = getNoticeType(group.baseTypeKey);
+      if (group.key === "visibility") {
+        return `${baseType.label}에서 복사한 항목 중 현재 조건에 맞는 항차가 없습니다.`;
+      }
       return `${baseType.label}에서 누른 항목 중 현재 조건에 맞는 항차가 없습니다.`;
     }
 
@@ -2925,6 +3082,30 @@
       const lines = buildNoticeLines(selectedRows);
       const headerBlock = header ? `${header}\n` : "";
       return `${headerBlock}${lines.join("\n")}${type.footer}`;
+    }
+
+    function getVisibilitySelectionAction(typeKey = state.activeType, selectedRows = getSelectedItems()) {
+      if (!isVisibilityFollowUpType(typeKey)) {
+        return { addRows: selectedRows, removeRows: [] };
+      }
+
+      const activeIds = state.copiedByType[typeKey];
+      const oppositeTypeKey = typeKey === "visibility_ctrl" ? "visibility_normal" : "visibility_ctrl";
+      const oppositeIds = state.copiedByType[oppositeTypeKey];
+      const waitIds = state.copiedByType.visibility_wait;
+      const action = { addRows: [], removeRows: [] };
+
+      selectedRows.forEach((row) => {
+        if (activeIds.has(row.itemId)) {
+          action.removeRows.push(row);
+          return;
+        }
+        if (waitIds.has(row.itemId) && !oppositeIds.has(row.itemId)) {
+          action.addRows.push(row);
+        }
+      });
+
+      return action;
     }
 
     function buildNoticeModeButtonsMarkup() {
@@ -2971,6 +3152,13 @@
 
     function buildCopyText() {
       const selectedRows = getSelectedItems();
+      if (isVisibilityFollowUpType(state.activeType)) {
+        const { addRows, removeRows } = getVisibilitySelectionAction(state.activeType, selectedRows);
+        if (!addRows.length && removeRows.length) {
+          return `${getNoticeType(state.activeType).label} 취소 후 출항대기로 복귀합니다.\n${buildNoticeLines(removeRows).join("\n")}`;
+        }
+        return buildNoticeBodyText(state.activeType, addRows);
+      }
       return buildNoticeBodyText(state.activeType, selectedRows);
     }
 
@@ -2986,6 +3174,13 @@
       if (!selectedRows.length) {
         const previewHeader = header || (isCustomMode ? "자유문구를 입력하세요." : "");
         return `${previewHeader}\n(왼쪽 항차 목록에서 복사할 항목을 선택하면 문구가 여기에 표시됩니다.)`.trim();
+      }
+
+      if (isVisibilityFollowUpType(state.activeType)) {
+        const { addRows, removeRows } = getVisibilitySelectionAction(state.activeType, selectedRows);
+        if (!addRows.length && removeRows.length) {
+          return `${getNoticeType(state.activeType).label} 취소 후 출항대기로 복귀합니다.\n${buildNoticeLines(removeRows).join("\n")}`;
+        }
       }
 
       if (isCustomMode && !header) {
@@ -3091,35 +3286,12 @@
         return;
       }
 
-      els.noticeList.innerHTML = rows.map((row) => {
-        const badgeTypes = getRowBadgeTypes(row, activeSelected);
+      if (isVisibilityFollowUpType(state.activeType)) {
+        els.noticeList.innerHTML = buildVisibilityFollowUpListMarkup(state.activeType, activeSelected);
+        return;
+      }
 
-        return `
-          <button
-            type="button"
-            class="notice-item ${activeSelected.has(row.itemId) ? "selected" : ""}"
-            data-notice-item="${escapeHtml(row.itemId)}"
-          >
-            <span class="notice-check">${activeSelected.has(row.itemId) ? "✓" : ""}</span>
-            <span class="notice-time">${escapeHtml(formatHHMM(row.sail_time_hhmm))}</span>
-            <span class="notice-main">
-              <span class="notice-name-row">
-                <span class="notice-name">${escapeHtml(row.ship_name)}</span>
-                ${badgeTypes.length ? `
-                  <span class="copied-badges">
-                    ${badgeTypes.map((badgeType) => `
-                      <span class="status-badge ${escapeHtml(badgeType.badgeClass)}">${escapeHtml(badgeType.label)}</span>
-                    `).join("")}
-                  </span>
-                ` : ""}
-              </span>
-              <span class="notice-sub">
-                ${escapeHtml(row.route_name)} · ${escapeHtml(row.departure_name)} 출항${row.arrival_name ? ` → ${escapeHtml(row.arrival_name)}` : ""}
-              </span>
-            </span>
-          </button>
-        `;
-      }).join("");
+      els.noticeList.innerHTML = rows.map((row) => buildNoticeItemMarkup(row, activeSelected)).join("");
     }
 
     function renderNoticePreview() {
@@ -3127,14 +3299,24 @@
     }
 
     function renderCopyButtons() {
-      const selectedCount = getSelectedItems().length;
+      const selectedRows = getSelectedItems();
+      const selectedCount = selectedRows.length;
       const hasCopied = NOTICE_TYPES.some((type) => state.copiedByType[type.key].size > 0);
       const needsCustomText = state.activeMode === "custom" && !String(state.customNoticeText).trim();
+      const visibilityAction = isVisibilityFollowUpType(state.activeType)
+        ? getVisibilitySelectionAction(state.activeType, selectedRows)
+        : null;
+      const isRemovalOnly = visibilityAction && visibilityAction.removeRows.length > 0 && visibilityAction.addRows.length === 0;
+      const isMixedApply = visibilityAction && visibilityAction.removeRows.length > 0 && visibilityAction.addRows.length > 0;
 
       els.copyNoticeBtn.disabled = selectedCount === 0 || needsCustomText;
       els.copyNoticeBtn.className = `copy-btn ${selectedCount > 0 && !needsCustomText ? "enabled" : "disabled"}`;
       if (needsCustomText) {
         els.copyNoticeBtn.textContent = "자유문구를 입력하세요";
+      } else if (isRemovalOnly) {
+        els.copyNoticeBtn.textContent = `${selectedCount}개 선택 · 취소`;
+      } else if (isMixedApply) {
+        els.copyNoticeBtn.textContent = `${selectedCount}개 선택 · 적용`;
       } else {
         els.copyNoticeBtn.textContent = selectedCount > 0 ? `${selectedCount}개 선택 · 복사` : "항목을 선택하세요";
       }
@@ -3278,9 +3460,49 @@
     async function copySelectedNotice() {
       const selectedRows = getSelectedItems();
       if (!selectedRows.length) return;
+      const activeType = getNoticeType(state.activeType);
+
+      if (isVisibilityFollowUpType(state.activeType)) {
+        const { addRows, removeRows } = getVisibilitySelectionAction(state.activeType, selectedRows);
+        const oppositeTypeKey = state.activeType === "visibility_ctrl" ? "visibility_normal" : "visibility_ctrl";
+        const copyText = addRows.length ? buildNoticeBodyText(state.activeType, addRows) : "";
+        const cancelText = removeRows.length
+          ? `${activeType.label} 취소 후 출항대기로 복귀합니다.\n${buildNoticeLines(removeRows).join("\n")}`
+          : "";
+
+        addRows.forEach((row) => {
+          state.copiedByType[state.activeType].add(row.itemId);
+          state.copiedByType[oppositeTypeKey].delete(row.itemId);
+        });
+        removeRows.forEach((row) => {
+          state.copiedByType[state.activeType].delete(row.itemId);
+        });
+
+        state.selectedByType[state.activeType].clear();
+        state.copiedBackup = null;
+        persistState();
+        render();
+
+        try {
+          if (copyText) {
+            await copyToClipboard(copyText);
+          }
+          if (copyText || cancelText) {
+            const toastText = copyText || cancelText;
+            const toastLabel = addRows.length && removeRows.length
+              ? `${activeType.label} ${addRows.length}건 등록, ${removeRows.length}건 취소`
+              : addRows.length
+                ? "✓ 복사됐어요"
+                : `${activeType.label} 취소`;
+            showToast(toastText, toastLabel);
+          }
+        } catch (error) {
+          alert(error instanceof Error ? error.message : "복사에 실패했습니다.");
+        }
+        return;
+      }
 
       const text = buildCopyText();
-      const activeType = getNoticeType(state.activeType);
       const group = getNoticeGroupForType(state.activeType);
       const conflictingTypeKeys = activeType.key === group.baseTypeKey
         ? []
