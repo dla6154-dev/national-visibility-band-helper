@@ -285,6 +285,10 @@
       color: #2f6f95;
     }
 
+    .profile-add-btn {
+      order: 0;
+    }
+
     .head-actions > .route-picker-btn:not(.profile-manage-btn) {
       order: 1;
     }
@@ -371,6 +375,12 @@
       min-width: 0;
     }
 
+    .profile-pill-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .profile-switch-desktop {
       display: flex;
       gap: 10px;
@@ -443,6 +453,18 @@
       text-align: left;
     }
 
+    .profile-card-wrap {
+      position: relative;
+      min-width: 176px;
+      flex: 0 0 auto;
+    }
+
+    .profile-card-wrap .profile-card {
+      width: 100%;
+      min-width: 0;
+      padding-right: 62px;
+    }
+
     .profile-card strong {
       font-size: 15px;
       line-height: 1.2;
@@ -463,9 +485,42 @@
       color: #1f6f37;
     }
 
+    .profile-edit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--sky-line);
+      background: rgba(255, 255, 255, 0.94);
+      color: #2f6f95;
+      font-size: 12px;
+      font-weight: 800;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .profile-edit-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(82, 143, 193, 0.42);
+      background: rgba(117, 197, 255, 0.18);
+    }
+
+    .profile-pill-edit-btn {
+      min-height: 42px;
+      padding: 0 12px;
+      border-radius: 999px;
+    }
+
+    .profile-card-edit-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+    }
+
     .helper-topline-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: 1fr;
       gap: 16px;
       align-items: start;
     }
@@ -475,17 +530,32 @@
     }
 
     .notice-mode-panel {
-      min-width: 280px;
+      min-width: 0;
       display: grid;
-      gap: 8px;
-      justify-items: end;
+      gap: 12px;
+      justify-items: center;
+      padding: 16px 18px;
+      border: 1px solid rgba(61, 183, 80, 0.28);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(248, 252, 246, 0.96) 0%, rgba(238, 247, 234, 0.92) 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82);
+      text-align: center;
+    }
+
+    .notice-mode-panel .field-label {
+      margin: 0;
+      color: #1f6f37;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
     }
 
     .notice-mode-row {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      justify-content: flex-end;
+      justify-content: center;
+      width: 100%;
     }
 
     .mode-btn {
@@ -494,6 +564,7 @@
       background: rgba(255, 255, 255, 0.88);
       color: var(--muted);
       padding: 10px 14px;
+      min-width: 110px;
       font-size: 13px;
       font-weight: 800;
       transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
@@ -595,6 +666,15 @@
     .filter-stack {
       display: grid;
       gap: 12px;
+    }
+
+    .time-filter-summary {
+      display: none;
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.4;
     }
 
     .field-label {
@@ -1380,7 +1460,7 @@
 
     @media (max-width: 720px) {
       .page {
-        padding-top: 22px;
+        padding: 16px 12px 28px;
       }
 
       .hero,
@@ -1390,17 +1470,52 @@
         flex-direction: column;
       }
 
+      .hero {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        gap: 12px;
+      }
+
+      .hero::after {
+        display: none;
+      }
+
       .hero-tools {
         max-width: none;
-        justify-items: start;
+        width: auto;
+        flex: 0 0 auto;
+        justify-items: end;
       }
 
       .hero-settings-head {
-        flex-direction: column;
+        margin-bottom: 10px;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .hero-settings-head .eyebrow {
+        display: none;
+      }
+
+      .hero-settings-title {
+        font-size: 18px;
+        line-height: 1.2;
+        letter-spacing: 0.02em;
+      }
+
+      .hero-profile-summary {
+        display: none;
       }
 
       .hero-usage {
-        text-align: left;
+        display: none;
       }
 
       .head-actions,
@@ -1408,8 +1523,54 @@
         justify-content: flex-start;
       }
 
+      .card {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .card-head {
+        padding: 0 0 12px;
+        border: 0;
+        background: transparent;
+        gap: 10px;
+      }
+
+      .card-head > div:first-child {
+        display: none;
+      }
+
+      .card-body {
+        padding: 0;
+      }
+
+      .route-picker-btn {
+        min-height: 40px;
+        padding: 0 14px 0 10px;
+        border-radius: 16px;
+        font-size: 13px;
+      }
+
+      .route-picker-icon {
+        width: 28px;
+        height: 28px;
+      }
+
+      .route-picker-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .refresh-btn {
+        min-height: 42px;
+        padding: 0 14px;
+        font-size: 13px;
+      }
+
       .helper-topline-row {
         grid-template-columns: 1fr;
+        gap: 10px;
       }
 
       .profile-switch-desktop {
@@ -1418,29 +1579,125 @@
 
       .profile-switch-mobile {
         display: flex;
+        gap: 8px;
+        padding-bottom: 0;
+      }
+
+      .profile-card {
+        min-width: 132px;
+        padding: 12px 14px;
+        border-radius: 18px;
+      }
+
+      .profile-card-wrap {
+        min-width: 132px;
       }
 
       .notice-mode-panel {
         min-width: 0;
-        justify-items: stretch;
+        justify-items: center;
+        order: 1;
+      }
+
+      .helper-topline-main {
+        order: 2;
+      }
+
+      .configured-route-btn {
+        min-height: 40px;
+        padding: 0 14px;
+        border-radius: 16px;
+        font-size: 13px;
       }
 
       .notice-mode-row,
       .notice-group-types {
-        justify-content: flex-start;
+        justify-content: center;
       }
 
       .meta-grid {
         grid-template-columns: 1fr;
       }
 
+      .helper-pane,
+      .preview-pane {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .helper-pane {
+        gap: 12px;
+      }
+
+      .field-label {
+        margin-bottom: 6px;
+      }
+
+      .helper-pane > div:first-child .field-label,
+      .filter-stack .field-label {
+        display: none;
+      }
+
+      .time-filter-summary {
+        display: block;
+      }
+
+      .toggle-group {
+        gap: 10px;
+      }
+
+      .toggle-btn {
+        padding: 10px 14px;
+        border-radius: 18px;
+        font-size: 14px;
+      }
+
+      .type-btn {
+        min-height: 56px;
+        border-radius: 18px;
+        font-size: 14px;
+      }
+
+      .helper-note,
+      .foot-note {
+        display: none;
+      }
+
       .notice-item {
-        align-items: flex-start;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        border-radius: 20px;
       }
 
       .notice-time {
-        width: auto;
-        min-width: 54px;
+        width: 62px;
+        min-width: 62px;
+        font-size: 18px;
+      }
+
+      .notice-name {
+        font-size: 16px;
+      }
+
+      .notice-sub {
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .status-badge {
+        font-size: 11px;
+      }
+
+      .preview-card {
+        border-radius: 20px;
+      }
+
+      .preview-text {
+        min-height: 220px;
       }
 
       .modal-backdrop {
@@ -1460,7 +1717,7 @@
         <div class="hero-settings-head">
           <div>
             <p class="eyebrow">저장된 설정</p>
-            <h1 class="hero-settings-title">설정 선택</h1>
+            <h1 class="hero-settings-title">밴드 공지 도우미</h1>
           </div>
           <div class="profile-summary-row hero-profile-summary">
             <div id="active-profile-badge" class="badge good">현재 설정</div>
@@ -1473,7 +1730,7 @@
         </div>
       </div>
       <div class="hero-tools">
-        <button id="refresh-btn" class="refresh-btn" type="button">↻ 데이터 새로고침</button>
+        <button id="refresh-btn" class="refresh-btn" type="button">항차 새로고침</button>
         <p class="hero-usage">상단 설정을 누르면 해당 항로 묶음으로 바로 바뀝니다.</p>
       </div>
     </header>
@@ -1486,6 +1743,15 @@
             <h2>운항 공지 문구 추출</h2>
           </div>
           <div class="head-actions">
+            <button id="add-profile-quick-btn" class="route-picker-btn profile-add-btn" type="button" title="설정 추가" aria-label="설정 추가">
+              <span class="route-picker-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M12 5v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <span>설정 추가</span>
+            </button>
             <button id="profile-manager-open-btn" class="route-picker-btn profile-manage-btn" type="button" title="설정 관리" aria-label="설정 관리">
               <span class="route-picker-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none">
@@ -1512,9 +1778,6 @@
         <div class="card-body">
           <div class="helper-topline">
             <div class="helper-topline-row">
-              <div class="helper-topline-main">
-                <button id="configured-route-open-btn" class="configured-route-btn" type="button">설정 항로 0개</button>
-              </div>
               <div class="notice-mode-panel">
                 <p class="field-label">문구 모드</p>
                 <div id="notice-mode-buttons" class="notice-mode-row"></div>
@@ -1533,6 +1796,7 @@
               <div class="filter-stack">
                 <div>
                   <p class="field-label">표시 범위</p>
+                  <p id="time-filter-summary" class="time-filter-summary">표시 시간대: 00:00 ~ 23:59</p>
                   <div id="time-filter-buttons" class="toggle-group"></div>
                 </div>
               </div>
@@ -1765,6 +2029,7 @@
     const els = {
       refreshBtn: document.getElementById("refresh-btn"),
       helperStatusBadge: document.getElementById("helper-status-badge"),
+      addProfileQuickBtn: document.getElementById("add-profile-quick-btn"),
       profileManagerOpenBtn: document.getElementById("profile-manager-open-btn"),
       configuredRouteOpenBtn: document.getElementById("configured-route-open-btn"),
       activeProfileBadge: document.getElementById("active-profile-badge"),
@@ -1804,6 +2069,7 @@
       helperNote: document.getElementById("helper-note"),
       noticeModeButtons: document.getElementById("notice-mode-buttons"),
       noticeTypeButtons: document.getElementById("notice-type-buttons"),
+      timeFilterSummary: document.getElementById("time-filter-summary"),
       timeFilterButtons: document.getElementById("time-filter-buttons"),
       noticeList: document.getElementById("notice-list"),
       copyNoticeBtn: document.getElementById("copy-notice-btn"),
@@ -1975,6 +2241,13 @@
       return hour * 60 + minute;
     }
 
+    function formatMinutesHHMM(totalMinutes) {
+      const normalized = ((totalMinutes % 1440) + 1440) % 1440;
+      const hour = String(Math.floor(normalized / 60)).padStart(2, "0");
+      const minute = String(normalized % 60).padStart(2, "0");
+      return `${hour}:${minute}`;
+    }
+
     function formatDateKorean(dateString) {
       if (!dateString) return "-";
       const date = new Date(dateString + "T00:00:00+09:00");
@@ -2068,6 +2341,14 @@
     function getNowMinutes() {
       const now = new Date();
       return now.getHours() * 60 + now.getMinutes();
+    }
+
+    function getTimeFilterSummaryText() {
+      if (state.timeFilter === "window") {
+        const nowMinutes = getNowMinutes();
+        return `표시 시간대: ${formatMinutesHHMM(nowMinutes - 120)} ~ ${formatMinutesHHMM(nowMinutes + 120)}`;
+      }
+      return "표시 시간대: 00:00 ~ 23:59";
     }
 
     function isWithinTwoHourWindow(row) {
@@ -2448,10 +2729,23 @@
 
     function getVisibleRows(typeKey = state.activeType) {
       const rows = getBaseVisibleRows();
-      if (!shouldScopeRowsToBaseSelection(typeKey)) return rows;
+      const type = getNoticeType(typeKey);
+      let visibleRows = rows;
 
-      const scopedItemIds = getGroupScopedItemIds(getNoticeType(typeKey).groupKey);
-      return rows.filter((row) => scopedItemIds.has(row.itemId));
+      if (shouldScopeRowsToBaseSelection(typeKey)) {
+        const scopedItemIds = getGroupScopedItemIds(type.groupKey);
+        visibleRows = visibleRows.filter((row) => scopedItemIds.has(row.itemId));
+      }
+
+      if (type.key === "visibility_normal") {
+        const blockedItemIds = new Set([
+          ...state.selectedByType.visibility_ctrl,
+          ...state.copiedByType.visibility_ctrl
+        ]);
+        visibleRows = visibleRows.filter((row) => !blockedItemIds.has(row.itemId));
+      }
+
+      return visibleRows;
     }
 
     function pruneSelections() {
@@ -2480,6 +2774,14 @@
         ...NOTICE_TYPES.map((type) => type.key).filter((key) => key !== state.activeType)
       ];
       return orderedTypeKeys.find((typeKey) => state.copiedByType[typeKey].has(row.itemId)) || "";
+    }
+
+    function getRowBadgeTypes(row, activeSet = state.selectedByType[state.activeType]) {
+      if (!row?.itemId) return [];
+      return NOTICE_TYPES.filter((type) => (
+        (type.key === state.activeType && activeSet.has(row.itemId))
+        || state.copiedByType[type.key].has(row.itemId)
+      ));
     }
 
     function getScopedSelectionHint(typeKey = state.activeType) {
@@ -2664,10 +2966,7 @@
       }
 
       els.noticeList.innerHTML = rows.map((row) => {
-        const badgeTypeKey = getRowAssignedTypeKey(row, activeSelected);
-        const badgeType = badgeTypeKey
-          ? NOTICE_TYPES.find((type) => type.key === badgeTypeKey) || null
-          : null;
+        const badgeTypes = getRowBadgeTypes(row, activeSelected);
 
         return `
           <button
@@ -2680,7 +2979,13 @@
             <span class="notice-main">
               <span class="notice-name-row">
                 <span class="notice-name">${escapeHtml(row.ship_name)}</span>
-                ${badgeType ? `<span class="status-badge ${escapeHtml(badgeType.badgeClass)}">${escapeHtml(badgeType.label)}</span>` : ""}
+                ${badgeTypes.length ? `
+                  <span class="copied-badges">
+                    ${badgeTypes.map((badgeType) => `
+                      <span class="status-badge ${escapeHtml(badgeType.badgeClass)}">${escapeHtml(badgeType.label)}</span>
+                    `).join("")}
+                  </span>
+                ` : ""}
               </span>
               <span class="notice-sub">
                 ${escapeHtml(row.route_name)} · ${escapeHtml(row.departure_name)} 출항${row.arrival_name ? ` → ${escapeHtml(row.arrival_name)}` : ""}
@@ -2992,17 +3297,23 @@
         const activeClass = profile.id === state.activeProfileId ? "active" : "";
         if (variant === "mobile") {
           return `
-            <button type="button" class="profile-card ${activeClass}" data-profile-switch="${escapeHtml(profile.id)}">
-              <strong>${escapeHtml(profile.name)}</strong>
-              <span>항로 ${profile.routes.length}개</span>
-            </button>
+            <div class="profile-card-wrap">
+              <button type="button" class="profile-card ${activeClass}" data-profile-switch="${escapeHtml(profile.id)}">
+                <strong>${escapeHtml(profile.name)}</strong>
+                <span>항로 ${profile.routes.length}개</span>
+              </button>
+              <button type="button" class="profile-edit-btn profile-card-edit-btn" data-profile-edit="${escapeHtml(profile.id)}" aria-label="${escapeHtml(profile.name)} 설정 수정">수정</button>
+            </div>
           `;
         }
         return `
-          <button type="button" class="profile-pill ${activeClass}" data-profile-switch="${escapeHtml(profile.id)}">
-            <span>${escapeHtml(profile.name)}</span>
-            <span class="profile-pill-meta">항로 ${profile.routes.length}개</span>
-          </button>
+          <div class="profile-pill-wrap">
+            <button type="button" class="profile-pill ${activeClass}" data-profile-switch="${escapeHtml(profile.id)}">
+              <span>${escapeHtml(profile.name)}</span>
+              <span class="profile-pill-meta">항로 ${profile.routes.length}개</span>
+            </button>
+            <button type="button" class="profile-edit-btn profile-pill-edit-btn" data-profile-edit="${escapeHtml(profile.id)}" aria-label="${escapeHtml(profile.name)} 설정 수정">수정</button>
+          </div>
         `;
       }).join("");
     }
@@ -3056,20 +3367,32 @@
       }
     }
 
-    function addProfile() {
+    function openProfileEditor(profileId) {
+      if (!profileId || !getProfileById(profileId)) return;
+      setActiveProfile(profileId);
+      toggleProfileManagerModal(true);
+    }
+
+    function addProfile(options = {}) {
+      const { openEditor = false } = options;
       if (state.profiles.length >= MAX_PROFILE_COUNT) {
         alert(`설정은 최대 ${MAX_PROFILE_COUNT}개까지 만들 수 있습니다.`);
-        return;
+        return null;
       }
       const nextProfile = createProfile(buildNextProfileName(), []);
       state.profiles.push(nextProfile);
       setActiveProfile(nextProfile.id, { skipPersist: true, skipRender: true });
       persistState();
       render();
+      if (openEditor) {
+        toggleProfileManagerModal(true);
+        return nextProfile;
+      }
       if (!els.profileManagerModal.hidden) {
         els.profileNameInput.focus();
         els.profileNameInput.select();
       }
+      return nextProfile;
     }
 
     function saveActiveProfileName() {
@@ -3190,6 +3513,9 @@
       }
 
       renderConfiguredRouteSummary();
+      if (els.timeFilterSummary) {
+        els.timeFilterSummary.textContent = getTimeFilterSummaryText();
+      }
       els.helperNote.textContent = state.selectedRoutes.length
         ? `${state.timeFilter === "window" ? "현재 ±2시간" : "오늘 전체"} 기준으로 항차를 보여주고, 설정만 바꿔도 새 API 호출 없이 같은 스냅샷 데이터 안에서 문구를 바로 분리합니다.`
         : "페이지를 열면 배포된 최신 운항 스냅샷을 자동으로 1회 불러옵니다. 설정을 바꾸기만 해도 새 API 호출 없이 이미 불러온 데이터 안에서 바로 표시합니다.";
@@ -3212,6 +3538,11 @@
 
     function bindEvents() {
       els.refreshBtn.addEventListener("click", () => fetchLatestRows());
+      if (els.addProfileQuickBtn) {
+        els.addProfileQuickBtn.addEventListener("click", () => {
+          addProfile({ openEditor: true });
+        });
+      }
       els.profileManagerOpenBtn.addEventListener("click", () => toggleProfileManagerModal(true));
       if (els.configuredRouteOpenBtn) {
         els.configuredRouteOpenBtn.addEventListener("click", () => toggleConfiguredRoutesModal(true));
@@ -3320,6 +3651,12 @@
         const profileSwitchBtn = event.target.closest("[data-profile-switch]");
         if (profileSwitchBtn) {
           setActiveProfile(profileSwitchBtn.getAttribute("data-profile-switch"));
+          return;
+        }
+
+        const profileEditBtn = event.target.closest("[data-profile-edit]");
+        if (profileEditBtn) {
+          openProfileEditor(profileEditBtn.getAttribute("data-profile-edit"));
           return;
         }
 
