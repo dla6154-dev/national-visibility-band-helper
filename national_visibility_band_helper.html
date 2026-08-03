@@ -551,29 +551,55 @@
     }
 
     .notice-mode-row {
+      background: rgba(75, 101, 70, 0.08);
+      border-radius: 14px;
+      padding: 4px;
+      gap: 3px;
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: center;
       width: 100%;
     }
 
     .mode-btn {
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.88);
-      color: var(--muted);
-      padding: 10px 14px;
-      min-width: 110px;
+      flex: 1;
+      border: none;
+      background: transparent;
+      border-radius: 10px;
+      padding: 10px 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.18s, box-shadow 0.18s;
+      color: #617060;
+      font-family: inherit;
+      min-width: unset;
       font-size: 13px;
       font-weight: 800;
-      transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+    }
+
+    .mode-btn .mode-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .mode-btn .mode-label {
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .mode-btn .mode-sub {
+      font-size: 10px;
+      font-weight: 500;
+      opacity: 0.7;
+      line-height: 1.1;
     }
 
     .mode-btn.active {
-      border-color: var(--violet-line);
-      background: var(--violet-soft);
-      color: #1f6f37;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
+      color: #1d6630;
     }
 
     .helper-route-row {
@@ -1231,8 +1257,23 @@
 
     .profile-modal-grid {
       display: grid;
-      grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.15fr);
+      grid-template-columns: minmax(0, 1fr);
       gap: 18px;
+    }
+
+    .profile-manager-head {
+      justify-content: flex-end;
+      padding: 16px 18px 0;
+      border-bottom: 0;
+    }
+
+    .profile-manager-head .modal-head-actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+
+    .profile-manager-body {
+      padding-top: 8px;
     }
 
     .profile-list-panel,
@@ -1752,15 +1793,6 @@
               </span>
               <span>설정 추가</span>
             </button>
-            <button id="profile-manager-open-btn" class="route-picker-btn profile-manage-btn" type="button" title="설정 관리" aria-label="설정 관리">
-              <span class="route-picker-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="M12 4.5 13.2 7l2.7.4-1.95 1.86.47 2.64L12 10.7 9.58 11.9l.47-2.64L8.1 7.4l2.7-.4L12 4.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-                  <circle cx="12" cy="15.5" r="3.25" stroke="currentColor" stroke-width="1.6"/>
-                </svg>
-              </span>
-              <span>설정 관리</span>
-            </button>
             <button id="route-picker-open-btn" class="route-picker-btn" type="button" title="내 항로 선택" aria-label="내 항로 선택">
               <span class="route-picker-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none">
@@ -1900,25 +1932,14 @@
   </div>
 
   <div id="profile-manager-modal" class="modal-backdrop" hidden>
-    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-manager-title">
-      <div class="modal-head">
-        <div>
-          <p class="eyebrow">설정 관리</p>
-          <h2 id="profile-manager-title">항로 설정 묶음 관리</h2>
-          <p>설정을 여러 개 만들어 두고, 설정만 바꿔도 API를 다시 호출하지 않고 이미 불러온 오늘 운항 목록 안에서 바로 필터링하는 구조입니다.</p>
-        </div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="설정 편집">
+      <div class="modal-head profile-manager-head">
         <div class="modal-head-actions">
           <button id="profile-manager-close-btn" class="modal-close-btn" type="button" aria-label="닫기">×</button>
         </div>
       </div>
-      <div class="modal-body">
+      <div class="modal-body profile-manager-body">
         <div class="profile-modal-grid">
-          <div class="profile-list-panel">
-            <div class="action-row">
-              <button id="add-profile-btn" class="btn-pill btn-primary" type="button">설정 추가</button>
-            </div>
-            <div id="profile-list" class="profile-list"></div>
-          </div>
           <div class="profile-editor-panel">
             <div>
               <p class="field-label">설정 이름</p>
@@ -1983,6 +2004,43 @@
           { key: "custom_free", label: "자유문구", header: "", footer: "", badgeClass: "pause" }
         ]
       }
+    ];
+
+    const MODE_META = {
+      visibility: { icon: "🌫️", sub: "저시정·안개" },
+      weather: { icon: "⛈️", sub: "풍랑·파도" },
+      custom: { icon: "✏️", sub: "직접 입력" }
+    };
+
+    const FIXED_PROFILE_ID = "profile-mokpo-center";
+    const FIXED_PROFILE_NAME = "목포센터";
+    const FIXED_PROFILE_ROUTES = [
+      "목포-외달",
+      "목포-제주",
+      "목포-상태서리",
+      "도초-우이",
+      "남강-가산",
+      "계마-안마",
+      "목포-율목",
+      "송도-병풍",
+      "진리-재원",
+      "율목-진도",
+      "하의-도초",
+      "진도-서거차",
+      "향화-낙월",
+      "목포-홍도",
+      "목포-상태동리",
+      "웅곡-신도",
+      "증도-자은",
+      "진도-제주",
+      "향화-송이",
+      "쉬미-가사",
+      "도초-목포",
+      "우수영-상태동리",
+      "진도-죽도",
+      "송공-병풍",
+      "북강-북강",
+      "송공-흑산"
     ];
 
     const NOTICE_TYPES = NOTICE_GROUPS.flatMap((group) => (
@@ -2156,14 +2214,31 @@
       return `profile-${Date.now()}-${index}-${Math.random().toString(36).slice(2, 8)}`;
     }
 
+    function getFixedProfileRoutes() {
+      return [...FIXED_PROFILE_ROUTES];
+    }
+
+    function isFixedProfile(profileOrId) {
+      if (typeof profileOrId === "string") {
+        return profileOrId === FIXED_PROFILE_ID;
+      }
+      if (!profileOrId || typeof profileOrId !== "object") return false;
+      return profileOrId.id === FIXED_PROFILE_ID || String(profileOrId.name || "").trim() === FIXED_PROFILE_NAME;
+    }
+
     function normalizeProfile(profile, index = 0) {
       if (!profile || typeof profile !== "object") return null;
-      const name = migrateLegacyProfileName(profile.name) || `${DEFAULT_PROFILE_NAME} ${index + 1}`;
-      const routes = Array.isArray(profile.routes)
-        ? [...new Set(profile.routes.filter(Boolean))]
-        : [];
+      const fixedProfile = isFixedProfile(profile);
+      const name = fixedProfile
+        ? FIXED_PROFILE_NAME
+        : (migrateLegacyProfileName(profile.name) || `${DEFAULT_PROFILE_NAME} ${index + 1}`);
+      const routes = fixedProfile
+        ? getFixedProfileRoutes()
+        : Array.isArray(profile.routes)
+          ? [...new Set(profile.routes.filter(Boolean))]
+          : [];
       return {
-        id: String(profile.id || buildProfileId(index)),
+        id: fixedProfile ? FIXED_PROFILE_ID : String(profile.id || buildProfileId(index)),
         name,
         routes
       };
@@ -2189,17 +2264,27 @@
       return getProfileById(state.activeProfileId);
     }
 
+    function ensureFixedProfiles() {
+      const fixedProfile = normalizeProfile({
+        id: FIXED_PROFILE_ID,
+        name: FIXED_PROFILE_NAME,
+        routes: getFixedProfileRoutes()
+      }, 0);
+      const otherProfiles = state.profiles
+        .map((profile, index) => normalizeProfile(profile, index + 1))
+        .filter((profile) => profile && !isFixedProfile(profile));
+      state.profiles = [fixedProfile, ...otherProfiles];
+    }
+
     function syncSelectedRoutesFromActiveProfile() {
       const activeProfile = getActiveProfile();
       state.selectedRoutes = activeProfile ? [...activeProfile.routes] : [];
     }
 
     function ensureProfilesState() {
-      if (!state.profiles.length) {
-        state.profiles = [createProfile(DEFAULT_PROFILE_NAME, state.selectedRoutes)];
-      }
+      ensureFixedProfiles();
       if (!state.activeProfileId || !getProfileById(state.activeProfileId)) {
-        state.activeProfileId = state.profiles[0]?.id || "";
+        state.activeProfileId = FIXED_PROFILE_ID;
       }
       syncSelectedRoutesFromActiveProfile();
     }
@@ -2207,6 +2292,11 @@
     function updateActiveProfileRoutes(nextRoutes) {
       const activeProfile = getActiveProfile();
       if (!activeProfile) return;
+      if (isFixedProfile(activeProfile)) {
+        activeProfile.routes = getFixedProfileRoutes();
+        state.selectedRoutes = [...activeProfile.routes];
+        return;
+      }
       activeProfile.routes = [...new Set((nextRoutes || []).filter(Boolean))];
       state.selectedRoutes = [...activeProfile.routes];
     }
@@ -2614,7 +2704,9 @@
         state.pendingRoute = state.pendingRoutes[0] || "";
         state.profiles = state.profiles.map((profile, index) => normalizeProfile({
           ...profile,
-          routes: (profile.routes || []).filter((route) => state.routes.includes(route))
+          routes: isFixedProfile(profile)
+            ? getFixedProfileRoutes()
+            : (profile.routes || []).filter((route) => state.routes.includes(route))
         }, index)).filter(Boolean);
         ensureProfilesState();
 
@@ -2680,6 +2772,23 @@
       if (els.selectVisibleRoutesBtn) {
         const visibleSelectableCount = state.filteredRoutes.filter((route) => !state.selectedRoutes.includes(route)).length;
         els.selectVisibleRoutesBtn.disabled = !visibleSelectableCount;
+      }
+    }
+
+    function syncRouteSelectSelectionState(activeRoute = "") {
+      if (!els.routeSelect) return;
+      const previousScrollTop = els.routeSelect.scrollTop;
+      let activeOption = null;
+      [...els.routeSelect.options].forEach((option) => {
+        if (!option.value) return;
+        option.selected = state.pendingRoutes.includes(option.value);
+        if (activeRoute && option.value === activeRoute) {
+          activeOption = option;
+        }
+      });
+      els.routeSelect.scrollTop = previousScrollTop;
+      if (activeOption && typeof activeOption.scrollIntoView === "function") {
+        activeOption.scrollIntoView({ block: "nearest" });
       }
     }
 
@@ -2824,7 +2933,11 @@
           type="button"
           class="mode-btn ${group.key === state.activeMode ? "active" : ""}"
           data-notice-mode="${escapeHtml(group.key)}"
-        >${escapeHtml(group.label)}</button>
+        >
+          <span class="mode-icon">${escapeHtml(MODE_META[group.key]?.icon ?? "")}</span>
+          <span class="mode-label">${escapeHtml(group.label)}</span>
+          <span class="mode-sub">${escapeHtml(MODE_META[group.key]?.sub ?? "")}</span>
+        </button>
       `).join("");
     }
 
@@ -2892,11 +3005,23 @@
       `).join("");
     }
 
+    function restoreRouteSelectScroll(scrollTop) {
+      if (!els.routeSelect) return;
+      els.routeSelect.scrollTop = scrollTop;
+      requestAnimationFrame(() => {
+        if (els.routeSelect) {
+          els.routeSelect.scrollTop = scrollTop;
+        }
+      });
+    }
+
     function renderRouteSelect() {
+      const previousScrollTop = els.routeSelect ? els.routeSelect.scrollTop : 0;
       state.filteredRoutes = filterRoutes(state.routeQuery);
       normalizePendingRoutes();
       if (!state.filteredRoutes.length) {
         els.routeSelect.innerHTML = `<option value="">검색 결과가 없습니다.</option>`;
+        restoreRouteSelectScroll(0);
         renderPendingRoutes();
         return;
       }
@@ -2908,6 +3033,7 @@
           ${state.selectedRoutes.includes(route) ? "disabled" : ""}
         >${escapeHtml(route)}${state.selectedRoutes.includes(route) ? " · 등록됨" : ""}</option>
       `).join("");
+      restoreRouteSelectScroll(previousScrollTop);
       renderPendingRoutes();
     }
 
@@ -3231,7 +3357,8 @@
     }
 
     function renderSelectedRoutes() {
-      const markup = buildSelectedRouteChipsMarkup(state.selectedRoutes);
+      const fixedActive = isFixedProfile(getActiveProfile());
+      const markup = buildSelectedRouteChipsMarkup(state.selectedRoutes, { removable: !fixedActive });
       if (els.selectedRoutes) {
         els.selectedRoutes.innerHTML = markup;
       }
@@ -3322,18 +3449,34 @@
       ensureProfilesState();
       const activeProfile = getActiveProfile();
       if (!activeProfile) return;
-      els.profileList.innerHTML = state.profiles.map((profile) => `
-        <button type="button" class="profile-list-item ${profile.id === state.activeProfileId ? "active" : ""}" data-profile-manage-select="${escapeHtml(profile.id)}">
-          <strong>${escapeHtml(profile.name)}</strong>
-          <span>항로 ${profile.routes.length}개</span>
-        </button>
-      `).join("");
-      els.profileNameInput.value = activeProfile.name;
-      els.profileManagerRoutes.innerHTML = buildSelectedRouteChipsMarkup(activeProfile.routes, {
-        removable: false,
-        placeholder: "등록된 항로가 없습니다."
-      });
-      els.deleteProfileBtn.disabled = state.profiles.length <= 1;
+      const fixedActive = isFixedProfile(activeProfile);
+      if (els.profileList) {
+        els.profileList.innerHTML = state.profiles.map((profile) => `
+          <button type="button" class="profile-list-item ${profile.id === state.activeProfileId ? "active" : ""}" data-profile-manage-select="${escapeHtml(profile.id)}">
+            <strong>${escapeHtml(profile.name)}</strong>
+            <span>항로 ${profile.routes.length}개</span>
+          </button>
+        `).join("");
+      }
+      if (els.profileNameInput) {
+        els.profileNameInput.value = activeProfile.name;
+        els.profileNameInput.readOnly = fixedActive;
+      }
+      if (els.profileManagerRoutes) {
+        els.profileManagerRoutes.innerHTML = buildSelectedRouteChipsMarkup(activeProfile.routes, {
+          removable: false,
+          placeholder: "등록된 항로가 없습니다."
+        });
+      }
+      if (els.saveProfileNameBtn) {
+        els.saveProfileNameBtn.disabled = fixedActive;
+      }
+      if (els.editProfileRoutesBtn) {
+        els.editProfileRoutesBtn.disabled = fixedActive;
+      }
+      if (els.deleteProfileBtn) {
+        els.deleteProfileBtn.disabled = fixedActive || state.profiles.length <= 1;
+      }
     }
 
     function renderProfiles() {
@@ -3362,8 +3505,10 @@
       document.body.style.overflow = open ? "hidden" : "";
       if (open) {
         renderProfileManager();
-        els.profileNameInput.focus();
-        els.profileNameInput.select();
+        if (els.profileNameInput && !els.profileNameInput.readOnly) {
+          els.profileNameInput.focus();
+          els.profileNameInput.select();
+        }
       }
     }
 
@@ -3389,8 +3534,10 @@
         return nextProfile;
       }
       if (!els.profileManagerModal.hidden) {
-        els.profileNameInput.focus();
-        els.profileNameInput.select();
+        if (els.profileNameInput && !els.profileNameInput.readOnly) {
+          els.profileNameInput.focus();
+          els.profileNameInput.select();
+        }
       }
       return nextProfile;
     }
@@ -3398,6 +3545,7 @@
     function saveActiveProfileName() {
       const activeProfile = getActiveProfile();
       if (!activeProfile) return;
+      if (isFixedProfile(activeProfile)) return;
       const nextName = sanitizeProfileName(els.profileNameInput.value) || activeProfile.name;
       activeProfile.name = nextName;
       persistState();
@@ -3408,6 +3556,7 @@
       if (state.profiles.length <= 1) return;
       const activeProfile = getActiveProfile();
       if (!activeProfile) return;
+      if (isFixedProfile(activeProfile)) return;
       if (!confirm(`'${activeProfile.name}' 설정을 삭제할까요?`)) return;
       state.profiles = state.profiles.filter((profile) => profile.id !== activeProfile.id);
       state.activeProfileId = state.profiles[0]?.id || "";
@@ -3445,12 +3594,14 @@
     }
 
     function removeRoute(route) {
+      if (isFixedProfile(getActiveProfile())) return;
       updateActiveProfileRoutes(state.selectedRoutes.filter((item) => item !== route));
       persistState();
       render();
     }
 
     function clearAllRoutes() {
+      if (isFixedProfile(getActiveProfile())) return;
       updateActiveProfileRoutes([]);
       setPendingRoutes([]);
       NOTICE_TYPES.forEach((type) => state.selectedByType[type.key].clear());
@@ -3459,6 +3610,10 @@
     }
 
     function toggleRouteModal(open) {
+      if (open && isFixedProfile(getActiveProfile())) {
+        showToast("목포센터 26항로는 고정 항로입니다.", "안내");
+        return;
+      }
       els.routePickerModal.hidden = !open;
       document.body.style.overflow = open ? "hidden" : "";
       if (open) {
@@ -3543,7 +3698,9 @@
           addProfile({ openEditor: true });
         });
       }
-      els.profileManagerOpenBtn.addEventListener("click", () => toggleProfileManagerModal(true));
+      if (els.profileManagerOpenBtn) {
+        els.profileManagerOpenBtn.addEventListener("click", () => toggleProfileManagerModal(true));
+      }
       if (els.configuredRouteOpenBtn) {
         els.configuredRouteOpenBtn.addEventListener("click", () => toggleConfiguredRoutesModal(true));
       }
@@ -3599,17 +3756,13 @@
         renderRouteSelect();
       });
 
-      els.routeSelect.addEventListener("change", (event) => {
-        setPendingRoutes([...event.target.selectedOptions].map((option) => option.value));
-        renderRouteSelect();
-      });
-
-      els.routeSelect.addEventListener("mousedown", (event) => {
+      els.routeSelect.addEventListener("click", (event) => {
         const option = event.target.closest("option");
         if (!option || option.disabled) return;
         event.preventDefault();
         togglePendingRoute(option.value);
-        renderRouteSelect();
+        syncRouteSelectSelectionState(option.value);
+        renderPendingRoutes();
       });
 
       els.routeSelect.addEventListener("keydown", (event) => {
@@ -3618,7 +3771,8 @@
         if (!option || option.disabled) return;
         event.preventDefault();
         togglePendingRoute(option.value);
-        renderRouteSelect();
+        syncRouteSelectSelectionState(option.value);
+        renderPendingRoutes();
       });
 
       els.routeSelect.addEventListener("dblclick", () => {
@@ -3713,9 +3867,11 @@
         restoreCopiedHistory();
       });
 
-      els.addProfileBtn.addEventListener("click", () => {
-        addProfile();
-      });
+      if (els.addProfileBtn) {
+        els.addProfileBtn.addEventListener("click", () => {
+          addProfile();
+        });
+      }
 
       els.saveProfileNameBtn.addEventListener("click", () => {
         saveActiveProfileName();
