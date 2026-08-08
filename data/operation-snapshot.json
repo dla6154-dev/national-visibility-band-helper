@@ -1,7 +1,7 @@
 {
   "source": "B554035/oprt-schd-info-v2/get-oprt-schd-info-v2",
   "observedDate": "2026-08-09",
-  "fetchedAt": "2026-08-08T19:06:02.891Z",
+  "fetchedAt": "2026-08-08T19:50:29.181Z",
   "itemCount": 723,
   "items": [
     {
@@ -1423,8 +1423,8 @@
       "nvg_se_nm": "통제",
       "nvg_stts_cd": "1",
       "nvg_stts_nm": "출항전",
-      "cntrl_rsn_cd": "01",
-      "cntrl_rsn_nm": "풍랑주의보",
+      "cntrl_rsn_cd": "02",
+      "cntrl_rsn_nm": "기상악화",
       "nnavi_rsn_cd": "",
       "nnavi_rsn_nm": null,
       "vsl_no": "MPR246210",
@@ -9459,8 +9459,8 @@
       "nvg_se_nm": "통제",
       "nvg_stts_cd": "1",
       "nvg_stts_nm": "출항전",
-      "cntrl_rsn_cd": "01",
-      "cntrl_rsn_nm": "풍랑주의보",
+      "cntrl_rsn_cd": "02",
+      "cntrl_rsn_nm": "기상악화",
       "nnavi_rsn_cd": "",
       "nnavi_rsn_nm": null,
       "vsl_no": "MPR246210",
