@@ -1,7 +1,7 @@
 {
   "source": "B554035/oprt-schd-info-v2/get-oprt-schd-info-v2",
   "observedDate": "2026-11-02",
-  "fetchedAt": "2026-11-01T15:36:06.553Z",
+  "fetchedAt": "2026-11-01T19:58:35.739Z",
   "itemCount": 705,
   "items": [
     {
@@ -12257,8 +12257,8 @@
       "nvg_drc_nm": "역방향",
       "nvg_se_cd": "1",
       "nvg_se_nm": "정상",
-      "nvg_stts_cd": "1",
-      "nvg_stts_nm": "출항전",
+      "nvg_stts_cd": "2",
+      "nvg_stts_nm": "운항중",
       "cntrl_rsn_cd": null,
       "cntrl_rsn_nm": null,
       "nnavi_rsn_cd": null,
